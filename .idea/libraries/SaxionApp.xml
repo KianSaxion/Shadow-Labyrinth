@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SaxionApp">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/shadow-labyrinth/Sandbox/resources/SaxionApp.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
