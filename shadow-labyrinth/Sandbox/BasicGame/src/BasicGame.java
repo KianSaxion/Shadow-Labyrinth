@@ -12,8 +12,9 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        SaxionApp.printLine("Hello");
+        SaxionApp.printLine("Hello here was Maksym!!!!!");
     }
+
 
     @Override
     public void loop() {
