@@ -4,11 +4,12 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     ArrayList<Map> tiles = new ArrayList<>();
+    final int MAX_SCREEN_COL = 16;
+    final int MAX_SCREEN_ROW = 16;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 40);
@@ -49,18 +50,16 @@ public class BasicGame implements GameLoop {
         int y = 0;
 
         while (col < 48 && row < 36) {
-            SaxionApp.drawImage(tiles.get(0).image, x, y, 16, 16);
+            SaxionApp.drawImage(tiles.get(0).image, x, y, MAX_SCREEN_ROW, MAX_SCREEN_COL);
             col++;
-            x += 16;
+            x += MAX_SCREEN_ROW;
 
             if (col == 48) {
                 col = 0;
                 x = 0;
                 row++;
-                y += 16;
+                y += MAX_SCREEN_COL;
             }
-
-
         }
     }
 }
