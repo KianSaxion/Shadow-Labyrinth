@@ -37,15 +37,32 @@ public class BasicGame implements GameLoop {
 
     public void loadMap() {
         Map grass = new Map();
-        grass.image = "shadow-labyrinth/Sandbox/resources/images/map/grass00.png";
+        grass.image = "shadow-labyrinth/Sandbox/resources/images/map/wall.png";
 
         tiles.add(grass);
     }
 
     public void drawMap() {
-        SaxionApp.drawImage(tiles.get(0).image, 100, 100);
-    }
+        int col = 0;
+        int row = 0;
+        int x = 0;
+        int y = 0;
 
+        while (col < 48 && row < 36) {
+            SaxionApp.drawImage(tiles.get(0).image, x, y, 16, 16);
+            col++;
+            x += 16;
+
+            if (col == 48) {
+                col = 0;
+                x = 0;
+                row++;
+                y += 16;
+            }
+
+
+        }
+    }
 }
 
 
