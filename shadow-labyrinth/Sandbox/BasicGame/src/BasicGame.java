@@ -17,6 +17,7 @@ public class BasicGame implements GameLoop {
     public void init() {
     }
 
+
     @Override
     public void loop() {
         loadMap();
