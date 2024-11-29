@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     ArrayList<Map> tiles = new ArrayList<>();
+    final int FINAL_SCALE = 48;
     final int MAX_SCREEN_COL = 16;
     final int MAX_SCREEN_ROW = 16;
     Cookiemonster cookiemonster;
@@ -29,7 +30,7 @@ public class BasicGame implements GameLoop {
     public void loop() {
         loadMap();
         drawMap();
-        SaxionApp.drawImage(cookiemonster.imageFile, cookiemonster.x, cookiemonster.y, 32, 32);
+        SaxionApp.drawImage(cookiemonster.imageFile, cookiemonster.x, cookiemonster.y, FINAL_SCALE, FINAL_SCALE);
         cookiemonster.x += cookiemonster.xSpeed;
         cookiemonster.y += cookiemonster.ySpeed;
     }
@@ -76,7 +77,7 @@ public class BasicGame implements GameLoop {
         int y = 0;
 
         while (col < 48 && row < 36) {
-            SaxionApp.drawImage(tiles.get(0).image, x, y, MAX_SCREEN_ROW, MAX_SCREEN_COL);
+            SaxionApp.drawImage(tiles.get(0).image, x, y, FINAL_SCALE, FINAL_SCALE);
             col++;
             x += MAX_SCREEN_ROW;
 
