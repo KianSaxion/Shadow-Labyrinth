@@ -12,7 +12,7 @@ public class BasicGame implements GameLoop {
     final int FINAL_SCALE = 48;
     final int MAX_SCREEN_COL = 16;
     final int MAX_SCREEN_ROW = 16;
-    Player player;
+    Cookiemonster cookiemonster;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 40);
@@ -20,44 +20,40 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        player = new Player();
-        player.x = 100;
-        player.y = 100;
+        cookiemonster = new Cookiemonster();
+        cookiemonster.x = 100;
+        cookiemonster.y = 100;
     }
 
 
     @Override
     public void loop() {
-        SaxionApp.clear();
         loadMap();
         drawMap();
         SaxionApp.drawImage(cookiemonster.imageFile, cookiemonster.x, cookiemonster.y, FINAL_SCALE, FINAL_SCALE);
         cookiemonster.x += cookiemonster.xSpeed;
         cookiemonster.y += cookiemonster.ySpeed;
-        SaxionApp.drawImage(player.imageFile, player.x, player.y, 32, 32);
-        player.x += player.xSpeed;
-        player.y += player.ySpeed;
     }
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                if (player.xSpeed > 0) {
-                    player.xSpeed = 0;
+                if (cookiemonster.xSpeed > 0) {
+                    cookiemonster.xSpeed = 0;
                 } else {
-                    player.xSpeed -= 1;
+                    cookiemonster.xSpeed -= 1;
                 }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                if(player.xSpeed < 0) {
-                    player.xSpeed = 0;
+                if(cookiemonster.xSpeed < 0) {
+                    cookiemonster.xSpeed = 0;
                 } else {
-                    player.xSpeed += 1;
+                    cookiemonster.xSpeed += 1;
                 }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_UP) {
-                player.ySpeed -= 1;
+                cookiemonster.ySpeed -= 1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                player.ySpeed += 1;
+                cookiemonster.ySpeed += 1;
             }
         }
     }
