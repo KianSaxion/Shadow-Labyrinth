@@ -27,6 +27,7 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
+        SaxionApp.clear();
         loadMap();
         drawMap();
         SaxionApp.drawImage(player.imageFile, player.x, player.y, 32, 32);
