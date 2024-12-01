@@ -1,9 +1,14 @@
 public class Cookiemonster {
-        int x;
-        int y;
+    int worldX;
+    int worldY;
 
-        int xSpeed;
-        int ySpeed;
+    public int screenX = 768 / 2;
+    public int screenY = 576 / 2;
 
-        String imageFile = "shadow-labyrinth/Sandbox/resources/images/player/cookie.jpg";
+    int xSpeed;
+    int ySpeed;
+
+    String imageFile = "shadow-labyrinth/Sandbox/resources/images/player/cookie.jpg";
+
+
 }

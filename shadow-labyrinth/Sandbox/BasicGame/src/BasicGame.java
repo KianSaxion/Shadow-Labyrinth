@@ -3,16 +3,25 @@ import nl.saxion.app.SaxionApp;
 import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
+
 import java.awt.event.KeyEvent;
 
 import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     ArrayList<Map> tiles = new ArrayList<>();
-    final int FINAL_SCALE = 48;
+    // TILE SETTINGS
+    final int FINAL_TILE_SCALE = 48;
+    final int ORIGINAL_TILE_SIZE = 16;
     final int MAX_SCREEN_COL = 48;
     final int MAX_SCREEN_ROW = 48;
     Cookiemonster cookiemonster;
+
+    // MAP SETTINGS
+    final int maxMapCol = 50;
+    final int maxMapRow = 50;
+    final int mapWidth = FINAL_TILE_SCALE * maxMapCol;
+    final int mapHeigth = FINAL_TILE_SCALE * maxMapRow;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 40);
@@ -21,8 +30,8 @@ public class BasicGame implements GameLoop {
     @Override
     public void init() {
         cookiemonster = new Cookiemonster();
-        cookiemonster.x = 100;
-        cookiemonster.y = 100;
+        cookiemonster.worldX = ORIGINAL_TILE_SIZE * 23;
+        cookiemonster.worldY = ORIGINAL_TILE_SIZE * 21;
 
         loadMap();
     }
@@ -34,9 +43,9 @@ public class BasicGame implements GameLoop {
         SaxionApp.clear();
 
         drawMap();
-        SaxionApp.drawImage(cookiemonster.imageFile, cookiemonster.x, cookiemonster.y, FINAL_SCALE, FINAL_SCALE);
-        cookiemonster.x += cookiemonster.xSpeed;
-        cookiemonster.y += cookiemonster.ySpeed;
+        SaxionApp.drawImage(cookiemonster.imageFile, (cookiemonster.screenX - (FINAL_TILE_SCALE / 2)), (cookiemonster.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+        cookiemonster.worldX += cookiemonster.xSpeed;
+        cookiemonster.worldY += cookiemonster.ySpeed;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class BasicGame implements GameLoop {
                     cookiemonster.xSpeed -= 1;
                 }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                if(cookiemonster.xSpeed < 0) {
+                if (cookiemonster.xSpeed < 0) {
                     cookiemonster.xSpeed = 0;
                 } else {
                     cookiemonster.xSpeed += 1;
@@ -75,21 +84,27 @@ public class BasicGame implements GameLoop {
     }
 
     public void drawMap() {
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
+        int mapCol = 0;
+        int mapRow = 0;
 
-        while (col < 48 && row < 36) {
-            SaxionApp.drawImage(tiles.get(0).image, x, y, FINAL_SCALE, FINAL_SCALE);
-            col++;
-            x += MAX_SCREEN_ROW;
+        while (mapCol < maxMapCol && mapRow < maxMapRow) {
+            int worldX = mapCol * FINAL_TILE_SCALE;
+            int worldY = mapRow * FINAL_TILE_SCALE;
+            int screenX = worldX - cookiemonster.worldX + cookiemonster.screenX;
+            int screenY = worldY - cookiemonster.worldY + cookiemonster.screenY;
 
-            if (col == 48) {
-                col = 0;
-                x = 0;
-                row++;
-                y += MAX_SCREEN_COL;
+            // the map tiles will be drawn around the player
+            if (worldX + FINAL_TILE_SCALE > (cookiemonster.worldX - cookiemonster.screenX) &&
+                    worldX - FINAL_TILE_SCALE < (cookiemonster.worldX + cookiemonster.screenX) &&
+                    worldY + FINAL_TILE_SCALE > (cookiemonster.worldY - cookiemonster.screenY) &&
+                    worldY - FINAL_TILE_SCALE < (cookiemonster.worldY + cookiemonster.screenY)) {
+                SaxionApp.drawImage(tiles.get(0).image, screenX, screenY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+            }
+            mapCol++;
+
+            if (mapCol == maxMapCol) {
+                mapCol = 0;
+                mapRow++;
             }
         }
     }
