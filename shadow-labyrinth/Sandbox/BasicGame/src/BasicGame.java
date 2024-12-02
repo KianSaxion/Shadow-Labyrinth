@@ -42,10 +42,23 @@ public class BasicGame implements GameLoop {
 
         SaxionApp.clear();
 
+        int newX = cookiemonster.worldX + cookiemonster.xSpeed;
+        int newY = cookiemonster.worldY + cookiemonster.ySpeed;
+
+        // Check if the new position has collisions
+        if (!checkCollision(newX, newY)) {
+            // Only move if there is no collision
+            cookiemonster.worldX = newX;
+            cookiemonster.worldY = newY;
+        } else {
+            // Reset the speed if there is a is a collision
+            cookiemonster.xSpeed = 0;
+            cookiemonster.ySpeed = 0;
+        }
+
         drawMap();
         SaxionApp.drawImage(cookiemonster.imageFile, (cookiemonster.screenX - (FINAL_TILE_SCALE / 2)), (cookiemonster.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
-        cookiemonster.worldX += cookiemonster.xSpeed;
-        cookiemonster.worldY += cookiemonster.ySpeed;
+
     }
 
     @Override
@@ -77,9 +90,27 @@ public class BasicGame implements GameLoop {
     }
 
     public void loadMap() {
-        Map grass = new Map();
-        grass.image = "shadow-labyrinth/Sandbox/resources/images/map/wall.png";
+        // Create Wall and grass objects
+        Map wall = new Map();
+        wall.image = "shadow-labyrinth/Sandbox/resources/images/map/wall.png";
+        wall.collision = true;
 
+        Map grass = new Map();
+        grass.image = "shadow-labyrinth/Sandbox/resources/images/map/grass00.png";
+        grass.collision = false;
+
+        // Fill the list with the map configuration
+        for (int row = 0; row < MAX_SCREEN_ROW; row++) {
+            for (int col = 0; col < MAX_SCREEN_COL; col++) {
+                if (row == 0 || row == MAX_SCREEN_ROW - 1 || col == 0 || col == MAX_SCREEN_COL - 1) {
+                    tiles.add(wall); // Outside layer filled with walls
+                } else {
+                    tiles.add(grass); // Inside area filled with grass
+                }
+            }
+        }
+
+        tiles.add(wall);
         tiles.add(grass);
     }
 
@@ -108,7 +139,26 @@ public class BasicGame implements GameLoop {
             }
         }
     }
+
+    public boolean checkCollision(int x, int y) {
+        // Calculate in which column and row the player is
+        int playerCol = x / FINAL_TILE_SCALE;
+        int playerRow = y / FINAL_TILE_SCALE;
+
+        // Check if the coordinates are within the raster
+        if (playerCol >= 0 && playerCol < MAX_SCREEN_COL && playerRow >= 0 && playerRow < MAX_SCREEN_ROW) {
+            int index = playerRow * MAX_SCREEN_COL + playerCol;
+            Map tile = tiles.get(index);
+
+            // Check if a tile is a wall
+            return tile.collision;
+        }
+
+        // Outside the raster is always a collision
+        return true;
+    }
 }
+
 
 
 
