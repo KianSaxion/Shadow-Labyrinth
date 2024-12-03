@@ -6,8 +6,6 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,11 +20,11 @@ public class BasicGame implements GameLoop {
     final int MAX_SCREEN_ROW = 50;
 
     // MAP SETTINGS
-    final int maxMapCol = 50;
-    final int maxMapRow = 50;
+    final int MAX_MAP_COLUMN = 48;
+    final int MAX_MAP_ROW = 48;
 
     ArrayList<Map> tiles = new ArrayList<>();
-    int[][] tileNumbers = new int[maxMapRow][maxMapCol];
+    int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
 
     // Game Entities
     Cookiemonster cookiemonster;
@@ -44,7 +42,7 @@ public class BasicGame implements GameLoop {
     }
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 40);
+        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
 
     @Override
@@ -71,27 +69,30 @@ public class BasicGame implements GameLoop {
             cookiemonster.ySpeed = 0;
         }
 
-        // Draw the Cookiemonster
-        SaxionApp.drawImage(
-                cookiemonster.imageFile,
-                (cookiemonster.worldX - FINAL_TILE_SCALE / 2),
-                (cookiemonster.worldY - FINAL_TILE_SCALE / 2),
-                FINAL_TILE_SCALE,
-                FINAL_TILE_SCALE
-        );
+
+        SaxionApp.drawImage(cookiemonster.imageFile, (cookiemonster.screenX - (FINAL_TILE_SCALE / 2)),
+                (cookiemonster.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+
     }
 
-    @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                cookiemonster.xSpeed = -1;
+                if (cookiemonster.xSpeed > 0) {
+                    cookiemonster.xSpeed = 0;
+                } else {
+                    cookiemonster.xSpeed -= 1;
+                }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                cookiemonster.xSpeed = 1;
+                if (cookiemonster.xSpeed < 0) {
+                    cookiemonster.xSpeed = 0;
+                } else {
+                    cookiemonster.xSpeed += 1;
+                }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_UP) {
-                cookiemonster.ySpeed = -1;
+                cookiemonster.ySpeed -= 1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                cookiemonster.ySpeed = 1;
+                cookiemonster.ySpeed += 1;
             }
         }
     }
@@ -107,16 +108,16 @@ public class BasicGame implements GameLoop {
     private void loadTileTypes() {
         tileTypes = new Map[2];
 
-        Map wall = new Map();
-        wall.image = "shadow-labyrinth/Sandbox/resources/images/map/wall.png";
-        wall.collision = false;
+        Map darkWall = new Map();
+        darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWall.png";
+        darkWall.collision = true;
 
-        Map grass = new Map();
-        grass.image = "shadow-labyrinth/Sandbox/resources/images/map/grass00.png";
-        grass.collision = false;
+        Map lightWall = new Map();
+        lightWall.image = "shadow-labyrinth/Sandbox/resources/images/map/lightWall.png";
+        lightWall.collision = false;
 
-        tileTypes[0] = grass;
-        tileTypes[1] = wall;
+        tileTypes[0] = darkWall;
+        tileTypes[1] = lightWall;
     }
 
     private void loadMap() throws IOException {
@@ -129,30 +130,43 @@ public class BasicGame implements GameLoop {
 
         int row = 0;
 
-        while (row < maxMapRow) {
+        while (row < MAX_MAP_ROW) {
             String line = br.readLine();
             if (line == null) break;
 
             String[] numbers = line.split(" ");
-            for (int col = 0; col < maxMapCol; col++) {
+            for (int col = 0; col < MAX_MAP_COLUMN; col++) {
                 tileNumbers[row][col] = Integer.parseInt(numbers[col]);
             }
             row++;
         }
         br.close();
-
     }
 
-    private void drawMap() {
-        for (int row = 0; row < maxMapRow; row++) {
-            for (int col = 0; col < maxMapCol; col++) {
-                int tileNumber = tileNumbers[row][col];
-                Map tile = tileTypes[tileNumber];
+    public void drawMap() {
+        int mapCol = 0;
+        int mapRow = 0;
 
-                int worldX = col * FINAL_TILE_SCALE;
-                int worldY = row * FINAL_TILE_SCALE;
+        while (mapCol < MAX_MAP_COLUMN && mapRow < MAX_MAP_ROW) {
+            int worldX = mapCol * FINAL_TILE_SCALE;
+            int worldY = mapRow * FINAL_TILE_SCALE;
+            int screenX = worldX - cookiemonster.worldX + cookiemonster.screenX;
+            int screenY = worldY - cookiemonster.worldY + cookiemonster.screenY;
+            int tileNumber = tileNumbers[mapRow][mapCol];
+            Map tile = tileTypes[tileNumber];
 
-                SaxionApp.drawImage(tile.image, worldX, worldY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+            // the map tiles will be drawn around the player
+            if (worldX + FINAL_TILE_SCALE > (cookiemonster.worldX - cookiemonster.screenX) &&
+                    worldX - FINAL_TILE_SCALE < (cookiemonster.worldX + cookiemonster.screenX) &&
+                    worldY + FINAL_TILE_SCALE > (cookiemonster.worldY - cookiemonster.screenY) &&
+                    worldY - FINAL_TILE_SCALE < (cookiemonster.worldY + cookiemonster.screenY)) {
+                SaxionApp.drawImage(tile.image, screenX, screenY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+            }
+            mapCol++;
+
+            if (mapCol == MAX_MAP_COLUMN) {
+                mapCol = 0;
+                mapRow++;
             }
         }
     }
@@ -161,7 +175,7 @@ public class BasicGame implements GameLoop {
         int col = x / FINAL_TILE_SCALE;
         int row = y / FINAL_TILE_SCALE;
 
-        if (col >= 0 && col < maxMapCol && row >= 0 && row < maxMapRow) {
+        if (col >= 0 && col < MAX_MAP_COLUMN && row >= 0 && row < MAX_MAP_ROW) {
             int tileNumber = tileNumbers[row][col];
             return tileTypes[tileNumber].collision;
         }
