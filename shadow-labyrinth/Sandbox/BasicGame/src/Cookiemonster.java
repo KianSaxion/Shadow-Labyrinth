@@ -1,9 +1,11 @@
+import nl.saxion.app.SaxionApp;
+
 public class Cookiemonster {
     int worldX;
     int worldY;
 
-    public int screenX = 768 / 2;
-    public int screenY = 576 / 2;
+    public int screenX = SaxionApp.getWidth() / 2;
+    public int screenY = SaxionApp.getHeight() / 2;
 
     int xSpeed;
     int ySpeed;
