@@ -1,27 +1,47 @@
 import nl.saxion.app.SaxionApp;
-
 import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
-    ArrayList<Map> tiles = new ArrayList<>();
     // TILE SETTINGS
     final int FINAL_TILE_SCALE = 48;
     final int ORIGINAL_TILE_SIZE = 16;
-    final int MAX_SCREEN_COL = 48;
-    final int MAX_SCREEN_ROW = 48;
-    Cookiemonster cookiemonster;
+    final int MAX_SCREEN_COL = 50;
+    final int MAX_SCREEN_ROW = 50;
 
     // MAP SETTINGS
     final int maxMapCol = 50;
     final int maxMapRow = 50;
-    final int mapWidth = FINAL_TILE_SCALE * maxMapCol;
-    final int mapHeigth = FINAL_TILE_SCALE * maxMapRow;
+
+    ArrayList<Map> tiles = new ArrayList<>();
+    int[][] tileNumbers = new int[maxMapRow][maxMapCol];
+
+    // Game Entities
+    Cookiemonster cookiemonster;
+    Map[] tileTypes;
+
+    public BasicGame() {
+        try {
+            loadTileTypes();
+            loadMap();
+        } catch (IOException e) {
+            System.err.println("Error initializing game: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 40);
@@ -32,136 +52,119 @@ public class BasicGame implements GameLoop {
         cookiemonster = new Cookiemonster();
         cookiemonster.worldX = ORIGINAL_TILE_SIZE * 23;
         cookiemonster.worldY = ORIGINAL_TILE_SIZE * 21;
-
-        loadMap();
     }
-
 
     @Override
     public void loop() {
-
         SaxionApp.clear();
+        drawMap();
 
         int newX = cookiemonster.worldX + cookiemonster.xSpeed;
         int newY = cookiemonster.worldY + cookiemonster.ySpeed;
 
-        // Check if the new position has collisions
+        // Check for collisions before updating position
         if (!checkCollision(newX, newY)) {
-            // Only move if there is no collision
             cookiemonster.worldX = newX;
             cookiemonster.worldY = newY;
         } else {
-            // Reset the speed if there is a is a collision
             cookiemonster.xSpeed = 0;
             cookiemonster.ySpeed = 0;
         }
 
-        drawMap();
-        SaxionApp.drawImage(cookiemonster.imageFile, (cookiemonster.screenX - (FINAL_TILE_SCALE / 2)), (cookiemonster.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
-
+        // Draw the Cookiemonster
+        SaxionApp.drawImage(
+                cookiemonster.imageFile,
+                (cookiemonster.worldX - FINAL_TILE_SCALE / 2),
+                (cookiemonster.worldY - FINAL_TILE_SCALE / 2),
+                FINAL_TILE_SCALE,
+                FINAL_TILE_SCALE
+        );
     }
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                if (cookiemonster.xSpeed > 0) {
-                    cookiemonster.xSpeed = 0;
-                } else {
-                    cookiemonster.xSpeed -= 1;
-                }
+                cookiemonster.xSpeed = -1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                if (cookiemonster.xSpeed < 0) {
-                    cookiemonster.xSpeed = 0;
-                } else {
-                    cookiemonster.xSpeed += 1;
-                }
+                cookiemonster.xSpeed = 1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_UP) {
-                cookiemonster.ySpeed -= 1;
+                cookiemonster.ySpeed = -1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                cookiemonster.ySpeed += 1;
+                cookiemonster.ySpeed = 1;
             }
         }
     }
 
+    /**
+     * @param mouseEvent
+     */
     @Override
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
 
-    public void loadMap() {
-        // Create Wall and grass objects
+    private void loadTileTypes() {
+        tileTypes = new Map[2];
+
         Map wall = new Map();
         wall.image = "shadow-labyrinth/Sandbox/resources/images/map/wall.png";
-        wall.collision = true;
+        wall.collision = false;
 
         Map grass = new Map();
         grass.image = "shadow-labyrinth/Sandbox/resources/images/map/grass00.png";
         grass.collision = false;
 
-        // Fill the list with the map configuration
-        for (int row = 0; row < MAX_SCREEN_ROW; row++) {
-            for (int col = 0; col < MAX_SCREEN_COL; col++) {
-                if (row == 0 || row == MAX_SCREEN_ROW - 1 || col == 0 || col == MAX_SCREEN_COL - 1) {
-                    tiles.add(wall); // Outside layer filled with walls
-                } else {
-                    tiles.add(grass); // Inside area filled with grass
-                }
-            }
-        }
-
-        tiles.add(wall);
-        tiles.add(grass);
+        tileTypes[0] = grass;
+        tileTypes[1] = wall;
     }
 
-    public void drawMap() {
-        int mapCol = 0;
-        int mapRow = 0;
+    private void loadMap() throws IOException {
+        Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/world01.txt");
+        if (!Files.exists(path)) {
+            throw new IOException("File not found: " + path.toAbsolutePath());
+        }
 
-        while (mapCol < maxMapCol && mapRow < maxMapRow) {
-            int worldX = mapCol * FINAL_TILE_SCALE;
-            int worldY = mapRow * FINAL_TILE_SCALE;
-            int screenX = worldX - cookiemonster.worldX + cookiemonster.screenX;
-            int screenY = worldY - cookiemonster.worldY + cookiemonster.screenY;
+        BufferedReader br = Files.newBufferedReader(path);
 
-            // the map tiles will be drawn around the player
-            if (worldX + FINAL_TILE_SCALE > (cookiemonster.worldX - cookiemonster.screenX) &&
-                    worldX - FINAL_TILE_SCALE < (cookiemonster.worldX + cookiemonster.screenX) &&
-                    worldY + FINAL_TILE_SCALE > (cookiemonster.worldY - cookiemonster.screenY) &&
-                    worldY - FINAL_TILE_SCALE < (cookiemonster.worldY + cookiemonster.screenY)) {
-                SaxionApp.drawImage(tiles.get(0).image, screenX, screenY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+        int row = 0;
+
+        while (row < maxMapRow) {
+            String line = br.readLine();
+            if (line == null) break;
+
+            String[] numbers = line.split(" ");
+            for (int col = 0; col < maxMapCol; col++) {
+                tileNumbers[row][col] = Integer.parseInt(numbers[col]);
             }
-            mapCol++;
+            row++;
+        }
+        br.close();
 
-            if (mapCol == maxMapCol) {
-                mapCol = 0;
-                mapRow++;
+    }
+
+    private void drawMap() {
+        for (int row = 0; row < maxMapRow; row++) {
+            for (int col = 0; col < maxMapCol; col++) {
+                int tileNumber = tileNumbers[row][col];
+                Map tile = tileTypes[tileNumber];
+
+                int worldX = col * FINAL_TILE_SCALE;
+                int worldY = row * FINAL_TILE_SCALE;
+
+                SaxionApp.drawImage(tile.image, worldX, worldY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
             }
         }
     }
 
-    public boolean checkCollision(int x, int y) {
-        // Calculate in which column and row the player is
-        int playerCol = x / FINAL_TILE_SCALE;
-        int playerRow = y / FINAL_TILE_SCALE;
+    private boolean checkCollision(int x, int y) {
+        int col = x / FINAL_TILE_SCALE;
+        int row = y / FINAL_TILE_SCALE;
 
-        // Check if the coordinates are within the raster
-        if (playerCol >= 0 && playerCol < MAX_SCREEN_COL && playerRow >= 0 && playerRow < MAX_SCREEN_ROW) {
-            int index = playerRow * MAX_SCREEN_COL + playerCol;
-            Map tile = tiles.get(index);
-
-            // Check if a tile is a wall
-            return tile.collision;
+        if (col >= 0 && col < maxMapCol && row >= 0 && row < maxMapRow) {
+            int tileNumber = tileNumbers[row][col];
+            return tileTypes[tileNumber].collision;
         }
-
-        // Outside the raster is always a collision
-        return true;
+        return true; // Collision for out-of-bound areas
     }
 }
-
-
-
-
-
-
-
