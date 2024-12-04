@@ -13,14 +13,14 @@ import java.nio.file.Paths;
 
 public class BasicGame implements GameLoop {
     // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 12;
+    final int FINAL_TILE_SCALE = 64;
     final int ORIGINAL_TILE_SIZE = 16;
 
     // MAP SETTINGS
-    final int MAX_MAP_COLUMN = 48;
-    final int MAX_MAP_ROW = 48;
+    final int MAX_MAP_COLUMN = 100;
+    final int MAX_MAP_ROW = 100;
 
-    // lists for a map
+    // lists for a maps
     int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
 
     // Game Entities

@@ -10,7 +10,7 @@ public class Player {
     int xSpeed;
     int ySpeed;
 
-    String imageFile = "shadow-labyrinth/Sandbox/resources/images/player/cookie.jpg";
+    String imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCfront.png";
 
 
 }
