@@ -75,21 +75,21 @@ public class BasicGame implements GameLoop {
 
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            if (keyboardEvent.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (keyboardEvent.getKeyCode() == KeyEvent.VK_A) {
                 if (player.xSpeed > 0) {
                     player.xSpeed = 0;
                 } else {
                     player.xSpeed -= 1;
                 }
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
+            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_D) {
                 if (player.xSpeed < 0) {
                     player.xSpeed = 0;
                 } else {
                     player.xSpeed += 1;
                 }
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_UP) {
+            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_W) {
                 player.ySpeed -= 1;
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_S) {
                 player.ySpeed += 1;
             }
         }
