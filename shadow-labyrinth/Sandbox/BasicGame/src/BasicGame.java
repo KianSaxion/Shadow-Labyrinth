@@ -13,12 +13,12 @@ import java.nio.file.Paths;
 
 public class BasicGame implements GameLoop {
     // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 64;
+    final int FINAL_TILE_SCALE = 52;
     final int ORIGINAL_TILE_SIZE = 16;
 
     // MAP SETTINGS
-    final int MAX_MAP_COLUMN = 100;
-    final int MAX_MAP_ROW = 100;
+    final int MAX_MAP_COLUMN = 122;
+    final int MAX_MAP_ROW = 56;
 
     // lists for a maps
     int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
@@ -108,12 +108,12 @@ public class BasicGame implements GameLoop {
         tileTypes = new Map[3];
 
         Map darkWall = new Map();
-        darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/lightWall.png";
+        darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
 
         Map lightWall = new Map();
         lightWall.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWall.png";
-        lightWall.collision = false;
+        lightWall.collision = true;
 
         Map voidWall = new Map();
         voidWall.image = "shadow-labyrinth/Sandbox/resources/images/map/void.png";
@@ -126,7 +126,7 @@ public class BasicGame implements GameLoop {
 
     // This method loads numbers from a txt file into a 2d array that is used to draw a map
     private void loadMap() throws IOException {
-        Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/world01.txt");
+        Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/map.txt");
         if (!Files.exists(path)) {
             throw new IOException("File not found: " + path.toAbsolutePath());
         }
