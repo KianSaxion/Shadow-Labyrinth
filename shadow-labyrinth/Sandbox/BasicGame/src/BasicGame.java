@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 public class BasicGame implements GameLoop {
     // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 48;
+    final int FINAL_TILE_SCALE = 12;
     final int ORIGINAL_TILE_SIZE = 16;
 
     // MAP SETTINGS
@@ -105,18 +105,23 @@ public class BasicGame implements GameLoop {
 
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     private void loadTileTypes() {
-        tileTypes = new Map[2];
+        tileTypes = new Map[3];
 
         Map darkWall = new Map();
-        darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWall.png";
-        darkWall.collision = true;
+        darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/lightWall.png";
+        darkWall.collision = false;
 
         Map lightWall = new Map();
-        lightWall.image = "shadow-labyrinth/Sandbox/resources/images/map/lightWall.png";
+        lightWall.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWall.png";
         lightWall.collision = false;
+
+        Map voidWall = new Map();
+        voidWall.image = "shadow-labyrinth/Sandbox/resources/images/map/void.png";
+        voidWall.collision = false;
 
         tileTypes[0] = darkWall;
         tileTypes[1] = lightWall;
+        tileTypes[2] = voidWall;
     }
 
     // This method loads numbers from a txt file into a 2d array that is used to draw a map
