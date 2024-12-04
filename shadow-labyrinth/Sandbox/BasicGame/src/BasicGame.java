@@ -10,26 +10,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     // TILE SETTINGS
     final int FINAL_TILE_SCALE = 48;
     final int ORIGINAL_TILE_SIZE = 16;
-    final int MAX_SCREEN_COL = 50;
-    final int MAX_SCREEN_ROW = 50;
 
     // MAP SETTINGS
     final int MAX_MAP_COLUMN = 48;
     final int MAX_MAP_ROW = 48;
 
-    ArrayList<Map> tiles = new ArrayList<>();
+    // lists for a map
     int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
 
     // Game Entities
-    Cookiemonster cookiemonster;
+    Player player;
     Map[] tileTypes;
 
+    // Method for a safe loading of resources for the map. It is connected directly to SaxionApp
     public BasicGame() {
         try {
             loadTileTypes();
@@ -47,9 +45,9 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        cookiemonster = new Cookiemonster();
-        cookiemonster.worldX = ORIGINAL_TILE_SIZE * 23;
-        cookiemonster.worldY = ORIGINAL_TILE_SIZE * 21;
+        player = new Player();
+        player.worldX = ORIGINAL_TILE_SIZE * 23;
+        player.worldY = ORIGINAL_TILE_SIZE * 21;
     }
 
     @Override
@@ -57,42 +55,42 @@ public class BasicGame implements GameLoop {
         SaxionApp.clear();
         drawMap();
 
-        int newX = cookiemonster.worldX + cookiemonster.xSpeed;
-        int newY = cookiemonster.worldY + cookiemonster.ySpeed;
+        int newX = player.worldX + player.xSpeed;
+        int newY = player.worldY + player.ySpeed;
 
         // Check for collisions before updating position
         if (!checkCollision(newX, newY)) {
-            cookiemonster.worldX = newX;
-            cookiemonster.worldY = newY;
+            player.worldX = newX;
+            player.worldY = newY;
         } else {
-            cookiemonster.xSpeed = 0;
-            cookiemonster.ySpeed = 0;
+            player.xSpeed = 0;
+            player.ySpeed = 0;
         }
 
 
-        SaxionApp.drawImage(cookiemonster.imageFile, (cookiemonster.screenX - (FINAL_TILE_SCALE / 2)),
-                (cookiemonster.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+        SaxionApp.drawImage(player.imageFile, (player.screenX - (FINAL_TILE_SCALE / 2)),
+                (player.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
 
     }
 
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                if (cookiemonster.xSpeed > 0) {
-                    cookiemonster.xSpeed = 0;
+                if (player.xSpeed > 0) {
+                    player.xSpeed = 0;
                 } else {
-                    cookiemonster.xSpeed -= 1;
+                    player.xSpeed -= 1;
                 }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                if (cookiemonster.xSpeed < 0) {
-                    cookiemonster.xSpeed = 0;
+                if (player.xSpeed < 0) {
+                    player.xSpeed = 0;
                 } else {
-                    cookiemonster.xSpeed += 1;
+                    player.xSpeed += 1;
                 }
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_UP) {
-                cookiemonster.ySpeed -= 1;
+                player.ySpeed -= 1;
             } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                cookiemonster.ySpeed += 1;
+                player.ySpeed += 1;
             }
         }
     }
@@ -105,6 +103,7 @@ public class BasicGame implements GameLoop {
 
     }
 
+    // This method loads two images for stone blocks stored in an array that is accessible within other methods
     private void loadTileTypes() {
         tileTypes = new Map[2];
 
@@ -120,6 +119,7 @@ public class BasicGame implements GameLoop {
         tileTypes[1] = lightWall;
     }
 
+    // This method loads numbers from a txt file into a 2d array that is used to draw a map
     private void loadMap() throws IOException {
         Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/world01.txt");
         if (!Files.exists(path)) {
@@ -143,6 +143,7 @@ public class BasicGame implements GameLoop {
         br.close();
     }
 
+    // Draws a map using 2d Array
     public void drawMap() {
         int mapCol = 0;
         int mapRow = 0;
@@ -150,16 +151,16 @@ public class BasicGame implements GameLoop {
         while (mapCol < MAX_MAP_COLUMN && mapRow < MAX_MAP_ROW) {
             int worldX = mapCol * FINAL_TILE_SCALE;
             int worldY = mapRow * FINAL_TILE_SCALE;
-            int screenX = worldX - cookiemonster.worldX + cookiemonster.screenX;
-            int screenY = worldY - cookiemonster.worldY + cookiemonster.screenY;
+            int screenX = worldX - player.worldX + player.screenX;
+            int screenY = worldY - player.worldY + player.screenY;
             int tileNumber = tileNumbers[mapRow][mapCol];
             Map tile = tileTypes[tileNumber];
 
             // the map tiles will be drawn around the player
-            if (worldX + FINAL_TILE_SCALE > (cookiemonster.worldX - cookiemonster.screenX) &&
-                    worldX - FINAL_TILE_SCALE < (cookiemonster.worldX + cookiemonster.screenX) &&
-                    worldY + FINAL_TILE_SCALE > (cookiemonster.worldY - cookiemonster.screenY) &&
-                    worldY - FINAL_TILE_SCALE < (cookiemonster.worldY + cookiemonster.screenY)) {
+            if (worldX + FINAL_TILE_SCALE > (player.worldX - player.screenX) &&
+                    worldX - FINAL_TILE_SCALE < (player.worldX + player.screenX) &&
+                    worldY + FINAL_TILE_SCALE > (player.worldY - player.screenY) &&
+                    worldY - FINAL_TILE_SCALE < (player.worldY + player.screenY)) {
                 SaxionApp.drawImage(tile.image, screenX, screenY, FINAL_TILE_SCALE, FINAL_TILE_SCALE);
             }
             mapCol++;
@@ -171,6 +172,7 @@ public class BasicGame implements GameLoop {
         }
     }
 
+    // Checks for a collision based on the image whether that one has a boolean isCollision true or not
     private boolean checkCollision(int x, int y) {
         int col = x / FINAL_TILE_SCALE;
         int row = y / FINAL_TILE_SCALE;
