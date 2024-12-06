@@ -26,6 +26,7 @@ public class BasicGame implements GameLoop {
     // Game Entities
     Player player;
     Map[] tileTypes;
+    KeyHandler keyHandler = new KeyHandler();
 
     // Method for a safe loading of resources for the map. It is connected directly to SaxionApp
     public BasicGame() {
@@ -46,6 +47,7 @@ public class BasicGame implements GameLoop {
     @Override
     public void init() {
         player = new Player();
+        keyHandler.update(player);
         player.worldX = ORIGINAL_TILE_SIZE * 23;
         player.worldY = ORIGINAL_TILE_SIZE * 21;
     }
@@ -54,6 +56,7 @@ public class BasicGame implements GameLoop {
     public void loop() {
         SaxionApp.clear();
         drawMap();
+        keyHandler.update(player);
 
         int newX = player.worldX + player.xSpeed;
         int newY = player.worldY + player.ySpeed;
@@ -73,25 +76,12 @@ public class BasicGame implements GameLoop {
 
     }
 
+    @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            if (keyboardEvent.getKeyCode() == KeyEvent.VK_A) {
-                if (player.xSpeed > 0) {
-                    player.xSpeed = 0;
-                } else {
-                    player.xSpeed -= 1;
-                }
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_D) {
-                if (player.xSpeed < 0) {
-                    player.xSpeed = 0;
-                } else {
-                    player.xSpeed += 1;
-                }
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_W) {
-                player.ySpeed -= 1;
-            } else if (keyboardEvent.getKeyCode() == KeyEvent.VK_S) {
-                player.ySpeed += 1;
-            }
+            keyHandler.keyPressed(keyboardEvent);
+        } else {
+            keyHandler.keyReleased(keyboardEvent);
         }
     }
 
