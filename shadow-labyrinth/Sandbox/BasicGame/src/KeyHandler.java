@@ -42,16 +42,20 @@ public class KeyHandler {
     public void update(Player player) {
         if (upPressed) {
             player.ySpeed = -speed;
+            player.imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCback.png";
         } else if (downPressed) {
             player.ySpeed = speed;
+            player.imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCfront.png";
         } else {
             player.ySpeed = 0;
         }
 
         if (leftPressed) {
             player.xSpeed = -speed;
+            player.imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCleft.png";
         } else if (rightPressed) {
             player.xSpeed = speed;
+            player.imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCright.png";
         } else {
             player.xSpeed = 0;
         }
