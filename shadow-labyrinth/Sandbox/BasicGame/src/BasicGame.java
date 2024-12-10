@@ -48,15 +48,17 @@ public class BasicGame implements GameLoop {
         int newX = player.worldX + player.xSpeed;
         int newY = player.worldY + player.ySpeed;
 
-        // Check for collisions before updating position
-        if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+        // If the player is moving downward (positive ySpeed), check for a collision
+        if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
+            player.ySpeed = 0;
+            player.xSpeed = 0;
+        }
+        // If there is no collision at the player's intended new position (newX, newY)
+        // Update the player's location if the path is clear
+        else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
             player.worldX = newX;
             player.worldY = newY;
-        } else {
-            player.xSpeed = 0;
-            player.ySpeed = 0;
         }
-
 
         SaxionApp.drawImage(player.imageFile, (player.screenX - (FINAL_TILE_SCALE / 2)),
                 (player.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
