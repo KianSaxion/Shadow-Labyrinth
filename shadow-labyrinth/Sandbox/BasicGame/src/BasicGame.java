@@ -7,11 +7,11 @@ import java.io.IOException;
 
 public class BasicGame implements GameLoop {
     // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 52;
+    final int FINAL_TILE_SCALE = 16;
     final int ORIGINAL_TILE_SIZE = 16;
 
-    public final int MAX_MAP_COLUMN = 122;
-    public  int MAX_MAP_ROW = 56;
+    public final int MAX_MAP_COLUMN = 129;
+    public  int MAX_MAP_ROW = 70;
 
     int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];

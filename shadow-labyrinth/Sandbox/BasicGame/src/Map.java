@@ -11,10 +11,10 @@ public class Map {
     public String image;
     public boolean collision;
 
-    public final int MAX_MAP_COLUMN = 122;
-    public final int MAX_MAP_ROW = 56;
+    public final int MAX_MAP_COLUMN = 129;
+    public final int MAX_MAP_ROW = 70;
     // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 52;
+    final int FINAL_TILE_SCALE = 16;
 
 
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
