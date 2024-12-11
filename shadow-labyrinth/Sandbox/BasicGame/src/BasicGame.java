@@ -16,6 +16,7 @@ public class BasicGame implements GameLoop {
     Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
+    Lighting lighting;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 10);
@@ -33,11 +34,14 @@ public class BasicGame implements GameLoop {
         keyHandler.update(player);
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+
+        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
     }
 
     @Override
     public void loop() {
         SaxionApp.clear();
+        lighting.update(player, 350); // Light radius in pixels
         keyHandler.update(player);
         currentMap.drawMap(player, tileNumbers, tileTypes);
         int newX = player.worldX + player.xSpeed;
@@ -58,6 +62,7 @@ public class BasicGame implements GameLoop {
         SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                 (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
+        lighting.draw();
     }
 
     @Override
