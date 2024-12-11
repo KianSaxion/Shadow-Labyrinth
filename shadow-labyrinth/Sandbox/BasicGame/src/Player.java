@@ -6,6 +6,4 @@ public class Player {
     int screenY = 576 / 2; // Center of the screen
     int xSpeed, ySpeed;
     String imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCfront.png";
-
-
 }

@@ -6,14 +6,9 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
-    // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 52;
-    final int ORIGINAL_TILE_SIZE = 16;
 
-    public final int MAX_MAP_COLUMN = 129;
-    public  int MAX_MAP_ROW = 70;
 
-    int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
+    int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
 
@@ -21,10 +16,9 @@ public class BasicGame implements GameLoop {
     Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
-    Lighting lighting;
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
+        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 10);
     }
 
     @Override
@@ -37,16 +31,13 @@ public class BasicGame implements GameLoop {
         }
 
         keyHandler.update(player);
-        player.worldX = ORIGINAL_TILE_SIZE * 23;
-        player.worldY = ORIGINAL_TILE_SIZE * 21;
-
-        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
     }
 
     @Override
     public void loop() {
         SaxionApp.clear();
-        lighting.update(player, 350); // Light radius in pixels
         keyHandler.update(player);
         currentMap.drawMap(player, tileNumbers, tileTypes);
         int newX = player.worldX + player.xSpeed;
@@ -64,10 +55,9 @@ public class BasicGame implements GameLoop {
             player.worldY = newY;
         }
 
-        SaxionApp.drawImage(player.imageFile, (player.screenX - (FINAL_TILE_SCALE / 2)),
-                (player.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+        SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
-        lighting.draw();
     }
 
     @Override
