@@ -6,14 +6,10 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
-    // TILE SETTINGS
-    final int FINAL_TILE_SCALE = 16;
-    final int ORIGINAL_TILE_SIZE = 16;
+    Variable var = new Variable();
 
-    public final int MAX_MAP_COLUMN = 129;
-    public  int MAX_MAP_ROW = 70;
 
-    int[][] tileNumbers = new int[MAX_MAP_ROW][MAX_MAP_COLUMN];
+    int[][] tileNumbers = new int[var.MAX_MAP_ROW][var.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
 
@@ -36,8 +32,8 @@ public class BasicGame implements GameLoop {
         }
 
         keyHandler.update(player);
-        player.worldX = ORIGINAL_TILE_SIZE * 23;
-        player.worldY = ORIGINAL_TILE_SIZE * 21;
+        player.worldX = var.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = var.ORIGINAL_TILE_SIZE * 21;
     }
 
     @Override
@@ -60,8 +56,8 @@ public class BasicGame implements GameLoop {
             player.worldY = newY;
         }
 
-        SaxionApp.drawImage(player.imageFile, (player.screenX - (FINAL_TILE_SCALE / 2)),
-                (player.screenY - (FINAL_TILE_SCALE / 2)), FINAL_TILE_SCALE, FINAL_TILE_SCALE);
+        SaxionApp.drawImage(player.imageFile, (player.screenX - (var.ORIGINAL_TILE_SIZE / 2)),
+                (player.screenY - (var.ORIGINAL_TILE_SIZE / 2)), var.ORIGINAL_TILE_SIZE, var.ORIGINAL_TILE_SIZE);
 
     }
 
