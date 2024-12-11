@@ -16,9 +16,10 @@ public class Map {
         }
     }
 
-    public void draw(){
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
+    public void draw(Player player) {
+
+        for (int i = player.x -10; i < player.x+10; i++) {
+            for (int j = player.y-10; j < player.y+10; j++) {
                 tiles[i][j].draw();
             }
         }
