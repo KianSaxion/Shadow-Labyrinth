@@ -6,10 +6,9 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
-    Variable var = new Variable();
 
 
-    int[][] tileNumbers = new int[var.MAX_MAP_ROW][var.MAX_MAP_COLUMN];
+    int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
 
@@ -19,7 +18,7 @@ public class BasicGame implements GameLoop {
     Map currentMap = new Map();
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
+        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 10);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class BasicGame implements GameLoop {
         }
 
         keyHandler.update(player);
-        player.worldX = var.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = var.ORIGINAL_TILE_SIZE * 21;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
     }
 
     @Override
@@ -56,8 +55,8 @@ public class BasicGame implements GameLoop {
             player.worldY = newY;
         }
 
-        SaxionApp.drawImage(player.imageFile, (player.screenX - (var.ORIGINAL_TILE_SIZE / 2)),
-                (player.screenY - (var.ORIGINAL_TILE_SIZE / 2)), var.ORIGINAL_TILE_SIZE, var.ORIGINAL_TILE_SIZE);
+        SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
     }
 

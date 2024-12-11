@@ -10,8 +10,7 @@ import java.nio.file.Paths;
 public class Map {
     public String image;
     public boolean collision;
-
-    Variable var = new Variable();
+    
 
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     public Map[] loadTileTypes() {
@@ -35,40 +34,28 @@ public class Map {
         return tileTypes;
     }
 
-
-    // Draws a map using 2d Array
     public void drawMap(Player player, int[][] tileNumbers, Map[] tileTypes) {
-        int mapCol = 0;
-        int mapRow = 0;
+        int startCol = Math.max(0, (player.worldX - player.screenX) / Variable.ORIGINAL_TILE_SIZE);
+        int endCol = Math.min(Variable.MAX_MAP_COLUMN - 1, (player.worldX + player.screenX) / Variable.ORIGINAL_TILE_SIZE);
+        int startRow = Math.max(0, (player.worldY - player.screenY) / Variable.ORIGINAL_TILE_SIZE);
+        int endRow = Math.min(Variable.MAX_MAP_ROW - 1, (player.worldY + player.screenY) / Variable.ORIGINAL_TILE_SIZE);
 
-        while (mapCol < var.MAX_MAP_COLUMN && mapRow < var.MAX_MAP_ROW) {
-            int worldX = mapCol * var.ORIGINAL_TILE_SIZE;
-            int worldY = mapRow * var.ORIGINAL_TILE_SIZE;
-            int screenX = worldX - player.worldX + player.screenX;
-            int screenY = worldY - player.worldY + player.screenY;
-            int tileNumber = tileNumbers[mapRow][mapCol];
-            Map tile = tileTypes[tileNumber];
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
+                int worldX = col * Variable.ORIGINAL_TILE_SIZE;
+                int worldY = row * Variable.ORIGINAL_TILE_SIZE;
+                int screenX = worldX - player.worldX + player.screenX;
+                int screenY = worldY - player.worldY + player.screenY;
+                int tileNumber = tileNumbers[row][col];
+                Map tile = tileTypes[tileNumber];
 
-            // the map tiles will be drawn around the player
-            if (worldX + var.ORIGINAL_TILE_SIZE > (player.worldX - player.screenX) &&
-                    worldX - var.ORIGINAL_TILE_SIZE < (player.worldX + player.screenX) &&
-                    worldY + var.ORIGINAL_TILE_SIZE > (player.worldY - player.screenY) &&
-                    worldY - var.ORIGINAL_TILE_SIZE < (player.worldY + player.screenY)) {
-                SaxionApp.drawImage(tile.image, screenX, screenY, var.ORIGINAL_TILE_SIZE, var.ORIGINAL_TILE_SIZE);
-            }
-            mapCol++;
-
-            if (mapCol == var.MAX_MAP_COLUMN) {
-                mapCol = 0;
-                mapRow++;
+                SaxionApp.drawImage(tile.image, screenX, screenY, Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
             }
         }
     }
-
+    
     public void loadMap(int[][] tileNumbers) throws IOException {
         // MAP SETTINGS
-
-
         Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/map.txt");
         if (!Files.exists(path)) {
             throw new IOException("File not found: " + path.toAbsolutePath());
@@ -78,12 +65,12 @@ public class Map {
 
         int row = 0;
 
-        while (row < var.MAX_MAP_ROW) {
+        while (row < Variable.MAX_MAP_ROW) {
             String line = br.readLine();
             if (line == null) break;
 
             String[] numbers = line.split(" ");
-            for (int col = 0; col < var.MAX_MAP_COLUMN; col++) {
+            for (int col = 0; col < Variable.MAX_MAP_COLUMN; col++) {
                 tileNumbers[row][col] = Integer.parseInt(numbers[col]);
             }
             row++;
@@ -93,10 +80,10 @@ public class Map {
     }
 
     public boolean checkCollision(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
-        int col = x / var.ORIGINAL_TILE_SIZE;
-        int row = y / var.ORIGINAL_TILE_SIZE;
+        int col = x / Variable.ORIGINAL_TILE_SIZE;
+        int row = y / Variable.ORIGINAL_TILE_SIZE;
 
-        if (col >= 0 && col < var.MAX_MAP_COLUMN && row >= 0 && row < var.MAX_MAP_ROW) {
+        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
             int tileNumber = tileNumbers[row][col];
             return tileTypes[tileNumber] != null && tileTypes[tileNumber].collision;
         }
