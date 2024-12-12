@@ -35,13 +35,14 @@ public class BasicGame implements GameLoop {
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
 
+        // Initialize lighting without initial filter creation
         lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
     }
 
     @Override
     public void loop() {
         SaxionApp.clear();
-        lighting.update(player, 350); // Light radius in pixels
+        lighting.update(player, 320); // Light radius in pixels
         keyHandler.update(player);
         currentMap.drawMap(player, tileNumbers, tileTypes);
         int newX = player.worldX + player.xSpeed;
