@@ -19,12 +19,6 @@ public class Lighting {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.circleSize = circleSize;
-
-        try {
-            createDarknessFilter(); // Generate the initial darkness filter image
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create darkness filter image.", e);
-        }
     }
 
     // Update circle size and re-generate the filter
