@@ -12,7 +12,7 @@ public class Lighting {
     private final int screenWidth, screenHeight;
     private int circleSize;
     private File tempImageFile; // Temporary image file for the light filter
-    private boolean enabled = true; // Toggle visibility
+    private boolean enabled = false; // Toggle visibility
 
     public Lighting(Player player, int screenWidth, int screenHeight, int circleSize) {
         this.player = player;

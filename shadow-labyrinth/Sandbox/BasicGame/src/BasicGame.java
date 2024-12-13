@@ -19,7 +19,7 @@ public class BasicGame implements GameLoop {
     Lighting lighting;
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 10);
+        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
 
     @Override
