@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 
 public class KeyHandler {
     boolean upPressed, downPressed, leftPressed, rightPressed;
-    private final int speed = 15; // Fixed speed
+    private final int speed = 10; // Fixed speed
     private boolean toggleFrame = false;
 
     public void keyPressed(KeyboardEvent e) {
