@@ -32,11 +32,12 @@ public class BasicGame implements GameLoop {
         }
 
         keyHandler.update(player);
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 9;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
 
-        // Initialize lighting without initial filter creation
-        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
+        lighting = new Lighting(player, 768, 576, 200);
+
+        lighting.addTorch(new Torch(Variable.ORIGINAL_TILE_SIZE * 7,Variable.ORIGINAL_TILE_SIZE * 50, 600));
     }
 
     @Override
