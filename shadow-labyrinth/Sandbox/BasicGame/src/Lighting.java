@@ -13,7 +13,7 @@ public class Lighting {
     private final Player player;
     private final int screenWidth, screenHeight;
     private int circleSize;
-    private List<Torch> torches;
+    private final List<Torch> torches;
     private File tempImageFile; // Temporary image file for the light filter
     private boolean enabled = true; // Toggle visibility
 
@@ -26,7 +26,7 @@ public class Lighting {
     }
 
     // Update circle size and re-generate the filter
-    public void update(Player player, int circleSize) {
+    public void update(int circleSize) {
         this.circleSize = circleSize;
         try {
             createDarknessFilter(); // Recreate the darkness filter with the updated circle size

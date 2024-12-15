@@ -43,7 +43,7 @@ public class BasicGame implements GameLoop {
     @Override
     public void loop() {
         SaxionApp.clear();
-        lighting.update(player, 320); // Light radius in pixels
+        lighting.update(320); // Light radius in pixels
         keyHandler.update(player);
         currentMap.drawMap(player, tileNumbers, tileTypes);
         int newX = player.worldX + player.xSpeed;
