@@ -7,8 +7,7 @@ import java.io.IOException;
 
 public class BasicGame implements GameLoop {
     // The constant responsible for which screen to display
-    public final int SCREEN_STATE = 1;
-
+    public static int screenState = 0;
     int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
@@ -37,15 +36,15 @@ public class BasicGame implements GameLoop {
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
 
         // Initialize lighting without initial filter creation
-         lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
+        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
     }
 
     @Override
     public void loop() {
-
-        if (SCREEN_STATE == 1) {
+        if (screenState == 0) {
+            SaxionApp.clear();
             UserInterface.drawStartScreen();
-        } else {
+        } else if (screenState == 1) {
             SaxionApp.clear();
             lighting.update(player, 320); // Light radius in pixels
             keyHandler.update(player);
@@ -79,6 +78,7 @@ public class BasicGame implements GameLoop {
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
+
     }
 
     /**
@@ -88,5 +88,4 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
-
 }

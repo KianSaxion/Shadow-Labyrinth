@@ -1,9 +1,10 @@
+import nl.saxion.app.SaxionApp;
 import nl.saxion.app.interaction.KeyboardEvent;
 import java.awt.event.KeyEvent;
 
 public class KeyHandler {
-    boolean upPressed, downPressed, leftPressed, rightPressed;
-    private final int speed = 10; // Fixed speed
+    boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed;
+    private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
 
     public void keyPressed(KeyboardEvent e) {
@@ -20,6 +21,40 @@ public class KeyHandler {
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = true;
+        }
+
+        if (key == KeyEvent.VK_UP) {
+            if (BasicGame.screenState == 0) {
+                AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
+            }
+            isUpArrowPressed = true;
+            UserInterface.commandNumber--;
+            if (UserInterface.commandNumber < 0) {
+                UserInterface.commandNumber = 3;
+            }
+        }
+
+        if (key == KeyEvent.VK_DOWN) {
+            if (BasicGame.screenState == 0) {
+                AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
+            }
+
+            isDownArrowPressed = true;
+            UserInterface.commandNumber++;
+            if (UserInterface.commandNumber > 3) {
+                UserInterface.commandNumber = 0;
+            }
+        }
+
+        if (key == KeyEvent.VK_ENTER) {
+            isEnterPressed = true;
+            if (UserInterface.commandNumber == 0) {
+                BasicGame.screenState = 1;
+            }
+
+            if (UserInterface.commandNumber == 3) {
+                System.exit(0);
+            }
         }
     }
 
