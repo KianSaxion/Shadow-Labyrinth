@@ -65,6 +65,19 @@ public class BasicGame implements GameLoop {
                 (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
         lighting.draw();
+        // Clean up the temporary file and flush the BufferedImage
+        if (lighting.tempImageFile != null && lighting.tempImageFile.exists()) {
+            if (!lighting.tempImageFile.delete()) {
+                System.err.println("Failed to delete temporary file: " + lighting.tempImageFile.getAbsolutePath());
+            }
+        }
+
+        // Flush the BufferedImage to free memory
+        if (lighting.darknessFilter != null) {
+            lighting.darknessFilter.flush(); // Clear the BufferedImage to free memory
+            lighting.darknessFilter = null; // Remove reference to the BufferedImage
+        }
+
     }
 
     @Override

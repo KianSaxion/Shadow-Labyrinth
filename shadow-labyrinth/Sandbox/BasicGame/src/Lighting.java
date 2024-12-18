@@ -9,12 +9,12 @@ import java.util.List;
 import nl.saxion.app.SaxionApp;
 
 public class Lighting {
-
+    public BufferedImage darknessFilter; // The BufferedImage for the light filter
+    public File tempImageFile; // Temporary image file for the light filter
     private final Player player;
     private final int screenWidth, screenHeight;
     private int circleSize;
     private final List<Torch> torches;
-    private File tempImageFile; // Temporary image file for the light filter
     private boolean enabled = true; // Toggle visibility
 
     public Lighting(Player player, int screenWidth, int screenHeight, int circleSize) {
@@ -23,6 +23,9 @@ public class Lighting {
         this.screenHeight = screenHeight;
         this.circleSize = circleSize;
         this.torches = new ArrayList<>();
+    }
+    public void clean(){
+
     }
 
     // Update circle size and re-generate the filter
@@ -40,8 +43,13 @@ public class Lighting {
     }
 
     private void createDarknessFilter() throws IOException {
-        // Creates the darkness filter with a light gradient around the player.
-        BufferedImage darknessFilter = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        // Dispose of any existing BufferedImage before creating a new one
+        if (darknessFilter != null) {
+            darknessFilter.flush(); // Clear the existing BufferedImage
+        }
+
+        // Create a new darkness filter with a light gradient around the player.
+        darknessFilter = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = (Graphics2D) darknessFilter.getGraphics();
 
         // Get the center coordinates of the light circle
@@ -82,10 +90,10 @@ public class Lighting {
         // Dispose of the Graphics2D object to free resources
         g2.dispose();
 
-        // Save to a temporary image file for SaxionApp
+        // Create a temporary file to store the filtered image
         tempImageFile = File.createTempFile("darknessFilter", ".png");
         ImageIO.write(darknessFilter, "png", tempImageFile);
-        tempImageFile.deleteOnExit(); // Delete temp file when closing the game
+        tempImageFile.deleteOnExit(); // Automatically delete the temp file on exit
     }
 
     // Easy adjustment of circleSize
@@ -106,6 +114,7 @@ public class Lighting {
     // Draws the darkness filter image onto the screen
     public void draw() {
         if (enabled && tempImageFile != null) {
+            // Draw the temporary image using SaxionApp
             SaxionApp.drawImage(tempImageFile.getAbsolutePath(), 0, 0);
         }
     }
