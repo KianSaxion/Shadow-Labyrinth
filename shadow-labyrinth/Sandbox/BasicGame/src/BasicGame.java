@@ -6,8 +6,8 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
-
-
+    // The constant responsible for which screen to display
+    public static int screenState = 0;
     int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
@@ -41,12 +41,34 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
-        SaxionApp.clear();
-        lighting.update(player, 320); // Light radius in pixels
-        keyHandler.update(player);
-        currentMap.drawMap(player, tileNumbers, tileTypes);
-        int newX = player.worldX + player.xSpeed;
-        int newY = player.worldY + player.ySpeed;
+        if (screenState == 0) {
+            SaxionApp.clear();
+            UserInterface.drawStartScreen();
+        } else if (screenState == 1) {
+            SaxionApp.clear();
+            lighting.update(player, 320); // Light radius in pixels
+            keyHandler.update(player);
+            currentMap.drawMap(player, tileNumbers, tileTypes);
+            int newX = player.worldX + player.xSpeed;
+            int newY = player.worldY + player.ySpeed;
+
+            // If the player is moving downward (positive ySpeed), check for a collision
+            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
+                player.ySpeed = 0;
+                player.xSpeed = 0;
+            }
+            // If there is no collision at the player's intended new position (newX, newY)
+            // Update the player's location if the path is clear
+            else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+                player.worldX = newX;
+                player.worldY = newY;
+            }
+
+            SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
+
+            lighting.draw();
+        }
 
         // Check if the player is moving downward (positive ySpeed) and check for a collision
         if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
@@ -82,6 +104,7 @@ public class BasicGame implements GameLoop {
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
+
     }
 
     /**
@@ -91,5 +114,4 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
-
 }

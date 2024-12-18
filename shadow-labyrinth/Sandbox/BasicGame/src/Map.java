@@ -6,13 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
+// This class contains mainly files for the drawing map and also needed methods
 public class Map {
     public String image;
     public boolean collision;
     public boolean isFinish;
 
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
+    // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
         Map[] tileTypes = new Map[4];
         Map darkWall = new Map();
@@ -43,6 +44,8 @@ public class Map {
         return tileTypes;
     }
 
+    // This method draws a map based on the player coordinates, so it does not draw an entire map, as a result it does
+    // not overload computer resources. It uses an array of tiles with images and also 2d array with numbers of the map blocks
     public void drawMap(Player player, int[][] tileNumbers, Map[] tileTypes) {
         int startCol = Math.max(0, (player.worldX - player.screenX) / Variable.ORIGINAL_TILE_SIZE);
         int endCol = Math.min(Variable.MAX_MAP_COLUMN - 1, (player.worldX + player.screenX) / Variable.ORIGINAL_TILE_SIZE);
@@ -62,14 +65,17 @@ public class Map {
             }
         }
     }
-    
+
+    // This method loads tile numbers into a 2d array from the map txt file, basically each number corresponds to a
+    // block that will be drawn on the screen.
     public void loadMap(int[][] tileNumbers) throws IOException {
-        // MAP SETTINGS
+        // MAP SETTINGS, in case if the file was not found. We will know what is the matter.
         Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/map.txt");
         if (!Files.exists(path)) {
             throw new IOException("File not found: " + path.toAbsolutePath());
         }
 
+        // It is a special class for read
         BufferedReader br = Files.newBufferedReader(path);
 
         int row = 0;
