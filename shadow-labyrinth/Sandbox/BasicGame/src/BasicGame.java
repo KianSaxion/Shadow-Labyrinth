@@ -18,6 +18,10 @@ public class BasicGame implements GameLoop {
     Map currentMap = new Map();
     Lighting lighting;
 
+    public long startTime;
+    public long finishTime;
+    public boolean timerStarted = false;
+
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -37,6 +41,9 @@ public class BasicGame implements GameLoop {
 
         // Initialize lighting without initial filter creation
         lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
+
+        startTime = System.currentTimeMillis();
+        timerStarted = true;
     }
 
     @Override
@@ -62,6 +69,15 @@ public class BasicGame implements GameLoop {
             else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
+            }
+
+            if (currentMap.checkFinish(newX,newY,tileNumbers,tileTypes)){
+                if (timerStarted) {
+                    finishTime = System.currentTimeMillis();
+                    long totalTime = finishTime - startTime;
+                    System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
+                    timerStarted = false;
+                }
             }
 
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
