@@ -18,9 +18,9 @@ public class BasicGame implements GameLoop {
     Map currentMap = new Map();
     Lighting lighting;
 
-    public long startTime;
-    public long finishTime;
-    public boolean timerStarted = false;
+    public static long startTime;
+    public static long finishTime;
+    public static boolean timerStarted = false;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -35,15 +35,11 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        keyHandler.update(player);
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
-
-        // Initialize lighting without initial filter creation
-        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
-
-        startTime = System.currentTimeMillis();
-        timerStarted = true;
+        // Call the method to initialize the variables.
+        // So if you want to initialize new variables use the -
+        // initializeGameState method so that the initialization -
+        // variables can reset once the game is finished
+        initializeGameState();
     }
 
     @Override
@@ -77,6 +73,7 @@ public class BasicGame implements GameLoop {
                     long totalTime = finishTime - startTime;
                     System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
                     timerStarted = false;
+                    initializeGameState();
                 }
             }
 
@@ -104,4 +101,25 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
+
+    // Method to initialize the main variables of the game, also used to -
+    // reset the game once finished.
+    public void initializeGameState() {
+        screenState = 0;
+        timerStarted = false;
+
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.xSpeed = 0;
+        player.ySpeed = 0;
+
+        try {
+            currentMap.loadMap(tileNumbers);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        lighting = new Lighting(player, 768, 576, 200);
+    }
+
 }

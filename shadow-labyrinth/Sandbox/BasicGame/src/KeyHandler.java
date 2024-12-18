@@ -50,6 +50,10 @@ public class KeyHandler {
             isEnterPressed = true;
             if (UserInterface.commandNumber == 0) {
                 BasicGame.screenState = 1;
+
+                // Start the timer once the game has started
+                BasicGame.startTime = System.currentTimeMillis();
+                BasicGame.timerStarted = true;
             }
 
             if (UserInterface.commandNumber == 3) {
