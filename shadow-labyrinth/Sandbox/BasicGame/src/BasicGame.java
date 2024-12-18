@@ -69,6 +69,32 @@ public class BasicGame implements GameLoop {
 
             lighting.draw();
         }
+
+        // Check if the player is moving downward (positive ySpeed) and check for a collision
+        if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
+            player.ySpeed = 0;
+            player.xSpeed = 0;
+        }
+        // If there is no collision at the player's intended new position (newX, newY)
+        // Update the player's location if the path is clear
+        else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+            player.worldX = newX;
+            player.worldY = newY;
+        }
+
+        // Check if the player reached the finish tile
+        if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
+            System.out.println("Finished the game");
+
+            // When we have the startmenu ready we can go to the start menu if the player
+            // has reached the finish tile. For now we just print in the terminal that
+            // the game is finished.
+        }
+
+        SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
+
+        lighting.draw();
     }
 
     @Override
