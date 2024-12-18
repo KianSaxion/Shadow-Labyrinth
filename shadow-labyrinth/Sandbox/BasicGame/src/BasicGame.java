@@ -18,11 +18,6 @@ public class BasicGame implements GameLoop {
     Map currentMap = new Map();
     Lighting lighting;
 
-    // fields for the timer
-    public long startTime;
-    public long finishTime;
-    public boolean timerStarted = false;
-
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -42,9 +37,6 @@ public class BasicGame implements GameLoop {
 
         // Initialize lighting without initial filter creation
         lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
-
-        startTime = System.currentTimeMillis();
-        timerStarted = true;
     }
 
     @Override
@@ -70,15 +62,10 @@ public class BasicGame implements GameLoop {
 
         // Check if the player reached the finish tile
         if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
-            if (timerStarted) {
-                finishTime = System.currentTimeMillis();
-                long totalTime = finishTime - startTime;
-                System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
-                timerStarted = false;
-            }
+            System.out.println("Finished the game");
 
             // When we have the startmenu ready we can go to the start menu if the player
-            // has reached the finish tile. For now, we just print in the terminal that
+            // has reached the finish tile. For now we just print in the terminal that
             // the game is finished.
         }
 
