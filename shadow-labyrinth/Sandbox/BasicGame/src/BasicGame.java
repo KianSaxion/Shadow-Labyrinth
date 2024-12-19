@@ -19,7 +19,7 @@ public class BasicGame implements GameLoop {
     Lighting lighting;
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 10);
+        SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class BasicGame implements GameLoop {
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 9;
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
 
-        lighting = new Lighting(player, 768, 576, 200);
+        lighting = new Lighting(player, 768, 576, 320);
 
         lighting.addTorch(new Torch(Variable.ORIGINAL_TILE_SIZE * 7,Variable.ORIGINAL_TILE_SIZE * 50, 600));
     }
@@ -65,19 +65,6 @@ public class BasicGame implements GameLoop {
                 (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
         lighting.draw();
-        // Clean up the temporary file and flush the BufferedImage
-        if (lighting.tempImageFile != null && lighting.tempImageFile.exists()) {
-            if (!lighting.tempImageFile.delete()) {
-                System.err.println("Failed to delete temporary file: " + lighting.tempImageFile.getAbsolutePath());
-            }
-        }
-
-        // Flush the BufferedImage to free memory
-        if (lighting.darknessFilter != null) {
-            lighting.darknessFilter.flush(); // Clear the BufferedImage to free memory
-            lighting.darknessFilter = null; // Remove reference to the BufferedImage
-        }
-
     }
 
     @Override

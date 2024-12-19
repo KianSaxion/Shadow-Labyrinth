@@ -9,8 +9,8 @@ import java.util.List;
 import nl.saxion.app.SaxionApp;
 
 public class Lighting {
-    public BufferedImage darknessFilter; // The BufferedImage for the light filter
-    public File tempImageFile; // Temporary image file for the light filter
+    private BufferedImage darknessFilter; // The BufferedImage for the light filter
+    private File tempImageFile; // Temporary image file for the light filter
     private final Player player;
     private final int screenWidth, screenHeight;
     private int circleSize;
@@ -24,13 +24,13 @@ public class Lighting {
         this.circleSize = circleSize;
         this.torches = new ArrayList<>();
     }
-    public void clean(){
-
-    }
 
     // Update circle size and re-generate the filter
     public void update(int circleSize) {
-        this.circleSize = circleSize;
+        if (this.circleSize != circleSize) {
+            update(circleSize);
+        }
+
         try {
             createDarknessFilter(); // Recreate the darkness filter with the updated circle size
         } catch (IOException e) {
@@ -43,9 +43,10 @@ public class Lighting {
     }
 
     private void createDarknessFilter() throws IOException {
-        // Dispose of any existing BufferedImage before creating a new one
+        // Clear the BufferedImage to free memory
         if (darknessFilter != null) {
-            darknessFilter.flush(); // Clear the existing BufferedImage
+            darknessFilter.flush();
+            darknessFilter = null; // Remove reference
         }
 
         // Create a new darkness filter with a light gradient around the player.
@@ -96,26 +97,34 @@ public class Lighting {
         tempImageFile.deleteOnExit(); // Automatically delete the temp file on exit
     }
 
-    // Easy adjustment of circleSize
-    public void setCircleSize(int newCircleSize) {
-        this.circleSize = newCircleSize; // Update the circle size to the new provided value
-        try {
-            createDarknessFilter(); // Re-generate the darkness filter based on new circle size
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to resize darkness filter image.", e);
-        }
-    }
+    // Easy adjustment of circleSize (for dynamic Lighting)
+//    public void setCircleSize(int newCircleSize) {
+//        this.circleSize = newCircleSize; // Update the circle size to the new provided value
+//        try {
+//            createDarknessFilter(); // Re-generate the darkness filter based on new circle size
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to resize darkness filter image.", e);
+//        }
+//    }
 
-    // Toggles visibility
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    // Toggles visibility (for dynamic Lighting)
+//    public void setEnabled(boolean enabled) {
+//        this.enabled = enabled;
+//    }
 
     // Draws the darkness filter image onto the screen
     public void draw() {
         if (enabled && tempImageFile != null) {
             // Draw the temporary image using SaxionApp
             SaxionApp.drawImage(tempImageFile.getAbsolutePath(), 0, 0);
+
+            // Delete the temporary file immediately after drawing
+            if (tempImageFile.exists()) {
+                if (!tempImageFile.delete()) {
+                    System.err.println("Failed to delete temporary file: " + tempImageFile.getAbsolutePath());
+                }
+                tempImageFile = null; // Avoid multiple deletion attempts
+            }
         }
     }
 }
