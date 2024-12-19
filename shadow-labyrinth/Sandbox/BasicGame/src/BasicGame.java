@@ -49,7 +49,7 @@ public class BasicGame implements GameLoop {
             UserInterface.drawStartScreen();
         } else if (screenState == 1) {
             SaxionApp.clear();
-            lighting.update(player, 320); // Light radius in pixels
+            lighting.update(320); // Light radius in pixels
             keyHandler.update(player);
             currentMap.drawMap(player, tileNumbers, tileTypes);
             int newX = player.worldX + player.xSpeed;
@@ -108,8 +108,8 @@ public class BasicGame implements GameLoop {
         screenState = 0;
         timerStarted = false;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
         player.xSpeed = 0;
         player.ySpeed = 0;
 
@@ -119,7 +119,9 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        lighting = new Lighting(player, 768, 576, 200);
+        lighting = new Lighting(player, 768, 576, 320);
+
+        lighting.addTorch(new Torch(Variable.ORIGINAL_TILE_SIZE * 13,Variable.ORIGINAL_TILE_SIZE * 50, 600));
     }
 
 }
