@@ -6,8 +6,8 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
-
-
+    // The constant responsible for which screen to display
+    public static int screenState = 0;
     int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     Map[] tileTypes = new Map[3];
 
@@ -17,6 +17,10 @@ public class BasicGame implements GameLoop {
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
     Lighting lighting;
+
+    public static long startTime;
+    public static long finishTime;
+    public static boolean timerStarted = false;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -31,40 +35,53 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        keyHandler.update(player);
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 9;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
-
-        lighting = new Lighting(player, 768, 576, 320);
-
-        lighting.addTorch(new Torch(Variable.ORIGINAL_TILE_SIZE * 7,Variable.ORIGINAL_TILE_SIZE * 50, 600));
+        // Call the method to initialize the variables.
+        // So if you want to initialize new variables use the -
+        // initializeGameState method so that the initialization -
+        // variables can reset once the game is finished
+        initializeGameState();
     }
 
     @Override
     public void loop() {
-        SaxionApp.clear();
-        lighting.update(320); // Light radius in pixels
-        keyHandler.update(player);
-        currentMap.drawMap(player, tileNumbers, tileTypes);
-        int newX = player.worldX + player.xSpeed;
-        int newY = player.worldY + player.ySpeed;
+        if (screenState == 0) {
+            SaxionApp.clear();
+            UserInterface.drawStartScreen();
+        } else if (screenState == 1) {
+            SaxionApp.clear();
+            lighting.update(player, 320); // Light radius in pixels
+            keyHandler.update(player);
+            currentMap.drawMap(player, tileNumbers, tileTypes);
+            int newX = player.worldX + player.xSpeed;
+            int newY = player.worldY + player.ySpeed;
 
-        // If the player is moving downward (positive ySpeed), check for a collision
-        if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
-            player.ySpeed = 0;
-            player.xSpeed = 0;
+            // If the player is moving downward (positive ySpeed), check for a collision
+            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
+                player.ySpeed = 0;
+                player.xSpeed = 0;
+            }
+            // If there is no collision at the player's intended new position (newX, newY)
+            // Update the player's location if the path is clear
+            else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+                player.worldX = newX;
+                player.worldY = newY;
+            }
+
+            if (currentMap.checkFinish(newX,newY,tileNumbers,tileTypes)){
+                if (timerStarted) {
+                    finishTime = System.currentTimeMillis();
+                    long totalTime = finishTime - startTime;
+                    System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
+                    timerStarted = false;
+                    initializeGameState();
+                }
+            }
+
+            SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
+
+            lighting.draw();
         }
-        // If there is no collision at the player's intended new position (newX, newY)
-        // Update the player's location if the path is clear
-        else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
-            player.worldX = newX;
-            player.worldY = newY;
-        }
-
-        SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
-                (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
-
-        lighting.draw();
     }
 
     @Override
@@ -74,6 +91,7 @@ public class BasicGame implements GameLoop {
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
+
     }
 
     /**
@@ -82,6 +100,26 @@ public class BasicGame implements GameLoop {
     @Override
     public void mouseEvent(MouseEvent mouseEvent) {
 
+    }
+
+    // Method to initialize the main variables of the game, also used to -
+    // reset the game once finished.
+    public void initializeGameState() {
+        screenState = 0;
+        timerStarted = false;
+
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.xSpeed = 0;
+        player.ySpeed = 0;
+
+        try {
+            currentMap.loadMap(tileNumbers);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        lighting = new Lighting(player, 768, 576, 200);
     }
 
 }
