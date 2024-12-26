@@ -4,6 +4,7 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     // The constant responsible for which screen to display
@@ -69,9 +70,17 @@ public class BasicGame implements GameLoop {
 
             if (currentMap.checkFinish(newX,newY,tileNumbers,tileTypes)){
                 if (timerStarted) {
+                    // Calculate the total time
                     finishTime = System.currentTimeMillis();
                     long totalTime = finishTime - startTime;
+
+                    // Print in the terminal how long it took to finish the game (for debugging purposes)
                     System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
+
+                    // Save the time in the leaderboard.csv
+                    Leaderboard.saveTime(totalTime);
+
+                    // Reset the game variables to make sure that the game can be replayed
                     timerStarted = false;
                     initializeGameState();
                 }
@@ -81,6 +90,12 @@ public class BasicGame implements GameLoop {
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
             lighting.draw();
+
+            // if the screenState is equal to 2, show the leaderboard
+        } else if (screenState == 2) {
+            SaxionApp.clear();
+            UserInterface.drawLeaderboard();
+
         }
     }
 

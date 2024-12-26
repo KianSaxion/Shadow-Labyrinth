@@ -56,6 +56,10 @@ public class KeyHandler {
                 BasicGame.timerStarted = true;
             }
 
+            if (UserInterface.commandNumber == 1) {
+                BasicGame.screenState = 2;
+            }
+
             if (UserInterface.commandNumber == 3) {
                 System.exit(0);
             }
