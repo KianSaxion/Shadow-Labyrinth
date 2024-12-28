@@ -1,5 +1,7 @@
 import nl.saxion.app.SaxionApp;
 
+import java.util.ArrayList;
+
 public final class UserInterface {
 
     private static final String IMAGE_PATH = "shadow-labyrinth/Sandbox/resources/images/";
@@ -50,6 +52,22 @@ public final class UserInterface {
             if (commandNumber == i) {
                 SaxionApp.drawImage(ARROW, ARROW_COORDINATES[i][0], ARROW_COORDINATES[i][1], 45, 30);
             }
+        }
+    }
+
+    public static void drawLeaderboard() {
+        // Arraylist with the top10 fastest times
+        ArrayList<Double> top10Times = Leaderboard.getTop10Times();
+
+        int textYCoordinate = 75;
+        int countPosition = 0;
+
+        // Show the 10 fastest times
+        SaxionApp.drawText("Top 10 fastest times", 240, 25, 35);
+        for (double time : top10Times) {
+            countPosition++;
+            SaxionApp.drawText(countPosition + " " + time + " seconds", 290, textYCoordinate, 20);
+            textYCoordinate += 50;
         }
     }
 
