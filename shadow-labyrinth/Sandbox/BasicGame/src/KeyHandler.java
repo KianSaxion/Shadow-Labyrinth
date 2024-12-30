@@ -54,6 +54,7 @@ public class KeyHandler {
                 // Start the timer once the game has started
                 BasicGame.startTime = System.currentTimeMillis();
                 BasicGame.timerStarted = true;
+                Lighting.update();
             }
 
             if (UserInterface.commandNumber == 1) {

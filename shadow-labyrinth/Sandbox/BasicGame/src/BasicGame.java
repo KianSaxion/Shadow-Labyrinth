@@ -50,7 +50,7 @@ public class BasicGame implements GameLoop {
             UserInterface.drawStartScreen();
         } else if (screenState == 1) {
             SaxionApp.clear();
-            lighting.update(player, 320); // Light radius in pixels
+            // Light radius in pixels
             keyHandler.update(player);
             currentMap.drawMap(player, tileNumbers, tileTypes);
             int newX = player.worldX + player.xSpeed;
@@ -134,7 +134,7 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        lighting = new Lighting(player, 768, 576, 200);
+        lighting = new Lighting(player, 300);
     }
 
 }
