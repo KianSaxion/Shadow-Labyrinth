@@ -4,7 +4,6 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     // The constant responsible for which screen to display
@@ -17,7 +16,6 @@ public class BasicGame implements GameLoop {
     Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
-    Lighting lighting;
 
     public static long startTime;
     public static long finishTime;
@@ -89,7 +87,7 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
-            lighting.draw();
+            Lighting.draw();
 
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
@@ -106,7 +104,6 @@ public class BasicGame implements GameLoop {
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
-
     }
 
     /**
@@ -133,8 +130,5 @@ public class BasicGame implements GameLoop {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        lighting = new Lighting(player, 300);
     }
-
 }

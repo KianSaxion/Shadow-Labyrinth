@@ -8,17 +8,12 @@ import nl.saxion.app.SaxionApp;
 
 public class Lighting {
 
-    private  final Player player;
-    private static final int screenWidth = 768;
-    private static final int screenHeight = 576;
-    private static int circleSize;
+    private static final int screenWidth = Variable.SCREEN_WIDTH;
+    private static final int screenHeight = Variable.SCREEN_HEIGHT;
+    private static final int CIRCLE_SIZE = 400;
     public static File tempImageFile; // Temporary image file for the light filter
-    private boolean enabled = false; // Toggle visibility
+    private static final boolean ENABLED = true; // Toggle visibility
 
-    public Lighting(Player player, int circleSize) {
-        this.player = player;
-        this.circleSize = circleSize;
-    }
 
     // Update circle size and re-generate the filter
     public static void update() {
@@ -36,7 +31,7 @@ public class Lighting {
         g2.fillRect(0, 0, screenWidth, screenHeight);
 
         // Dispose of the Graphics2D object to free resources
-//        g2.dispose();
+        g2.dispose();
 
 
         // Save to a temporary image file for SaxionApp
@@ -63,7 +58,7 @@ public class Lighting {
 
         // Create a radial gradient paint centered at the light circle
         RadialGradientPaint gradientPaint = new RadialGradientPaint(
-                centerX, centerY, circleSize / 2.0f, fractions, colors
+                centerX, centerY, CIRCLE_SIZE / 2.0f, fractions, colors
         );
 
         // Apply the gradient paint to the entire screen
@@ -73,8 +68,8 @@ public class Lighting {
 
 
     // Draws the darkness filter image onto the screen
-    public void draw() {
-        if (enabled && tempImageFile != null) {
+    public static void draw() {
+        if (ENABLED && tempImageFile != null) {
             SaxionApp.drawImage(tempImageFile.getAbsolutePath(), 0, 0);
         }
     }
