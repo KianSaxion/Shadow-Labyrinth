@@ -4,6 +4,7 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
     // The constant responsible for which screen to display
@@ -18,9 +19,9 @@ public class BasicGame implements GameLoop {
     Map currentMap = new Map();
     Lighting lighting;
 
-    public long startTime;
-    public long finishTime;
-    public boolean timerStarted = false;
+    public static long startTime;
+    public static long finishTime;
+    public static boolean timerStarted = false;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -35,15 +36,11 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        keyHandler.update(player);
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
-
-        // Initialize lighting without initial filter creation
-        lighting = new Lighting(player, 768, 576, 200); // Example starting circle size
-
-        startTime = System.currentTimeMillis();
-        timerStarted = true;
+        // Call the method to initialize the variables.
+        // So if you want to initialize new variables use the -
+        // initializeGameState method so that the initialization -
+        // variables can reset once the game is finished
+        initializeGameState();
     }
 
     @Override
@@ -73,10 +70,19 @@ public class BasicGame implements GameLoop {
 
             if (currentMap.checkFinish(newX,newY,tileNumbers,tileTypes)){
                 if (timerStarted) {
+                    // Calculate the total time
                     finishTime = System.currentTimeMillis();
                     long totalTime = finishTime - startTime;
+
+                    // Print in the terminal how long it took to finish the game (for debugging purposes)
                     System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
+
+                    // Save the time in the leaderboard.csv
+                    Leaderboard.saveTime(totalTime);
+
+                    // Reset the game variables to make sure that the game can be replayed
                     timerStarted = false;
+                    initializeGameState();
                 }
             }
 
@@ -84,6 +90,12 @@ public class BasicGame implements GameLoop {
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
             lighting.draw();
+
+            // if the screenState is equal to 2, show the leaderboard
+        } else if (screenState == 2) {
+            SaxionApp.clear();
+            UserInterface.drawLeaderboard();
+
         }
     }
 
@@ -104,4 +116,25 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
+
+    // Method to initialize the main variables of the game, also used to -
+    // reset the game once finished.
+    public void initializeGameState() {
+        screenState = 0;
+        timerStarted = false;
+
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.xSpeed = 0;
+        player.ySpeed = 0;
+
+        try {
+            currentMap.loadMap(tileNumbers);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        lighting = new Lighting(player, 768, 576, 200);
+    }
+
 }
