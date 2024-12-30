@@ -54,6 +54,10 @@ public class KeyHandler {
                 // Start the timer once the game has started
                 BasicGame.startTime = System.currentTimeMillis();
                 BasicGame.timerStarted = true;
+                // That is the fix for the big lighting bug
+                // The idea that the dark image will only be created once instead of recreating it in the loop
+                // That is the fix, note for the torches you have to create another method that will register a new file
+                Lighting.update();
             }
 
             if (UserInterface.commandNumber == 1) {
