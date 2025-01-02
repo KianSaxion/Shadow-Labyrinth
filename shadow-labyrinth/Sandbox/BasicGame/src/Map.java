@@ -14,7 +14,7 @@ public class Map {
 
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
-    public Map[] loadTileTypes() {
+    public static Map[] loadTileTypes() {
         Map[] tileTypes = new Map[4];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
@@ -68,7 +68,8 @@ public class Map {
 
     // This method loads tile numbers into a 2d array from the map txt file, basically each number corresponds to a
     // block that will be drawn on the screen.
-    public void loadMap(int[][] tileNumbers) throws IOException {
+    public static int[][] loadMap() throws IOException {
+        int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
         // MAP SETTINGS, in case if the file was not found. We will know what is the matter.
         Path path = Paths.get("shadow-labyrinth/Sandbox/resources/files/map.txt");
         if (!Files.exists(path)) {
@@ -92,6 +93,7 @@ public class Map {
         }
 
         br.close();
+        return tileNumbers;
     }
 
     public boolean checkCollision(int x, int y, int[][] tileNumbers, Map[] tileTypes) {

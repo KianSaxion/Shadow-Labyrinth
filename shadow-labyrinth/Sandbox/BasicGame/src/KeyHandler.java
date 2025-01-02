@@ -1,13 +1,14 @@
 import nl.saxion.app.SaxionApp;
 import nl.saxion.app.interaction.KeyboardEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 public class KeyHandler {
     boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed;
     private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
 
-    public void keyPressed(KeyboardEvent e) {
+    public void keyPressed(KeyboardEvent e) throws IOException {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_W) {
@@ -62,6 +63,10 @@ public class KeyHandler {
 
             if (UserInterface.commandNumber == 1) {
                 BasicGame.screenState = 2;
+            }
+
+            if (UserInterface.commandNumber == 2) {
+                BasicGame.screenState = 3;
             }
 
             if (UserInterface.commandNumber == 3) {

@@ -27,13 +27,12 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        try {
-            tileTypes = currentMap.loadTileTypes();
-            currentMap.loadMap(tileNumbers);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        SaxionApp.clear();
+            try {
+                Minimap.drawMiniMap();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         // Call the method to initialize the variables.
         // So if you want to initialize new variables use the -
         // initializeGameState method so that the initialization -
@@ -93,14 +92,24 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
-
+        } else if (screenState == 3) {
+//            SaxionApp.clear();
+//            try {
+//                Minimap.drawMiniMap();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            keyHandler.keyPressed(keyboardEvent);
+            try {
+                keyHandler.keyPressed(keyboardEvent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
@@ -126,7 +135,8 @@ public class BasicGame implements GameLoop {
         player.ySpeed = 0;
 
         try {
-            currentMap.loadMap(tileNumbers);
+            tileNumbers = Map.loadMap();
+            tileTypes = Map.loadTileTypes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
