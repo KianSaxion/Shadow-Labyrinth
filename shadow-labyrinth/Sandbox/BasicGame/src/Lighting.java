@@ -12,7 +12,7 @@ public class Lighting {
     private static final int screenHeight = Variable.SCREEN_HEIGHT;
     private static final int CIRCLE_SIZE = 400;
     public static File tempImageFile; // Temporary image file for the light filter
-    private static final boolean ENABLED = true; // Toggle visibility
+    private static final boolean ENABLED = false; // Toggle visibility
 
 
     // Update circle size and re-generate the filter
