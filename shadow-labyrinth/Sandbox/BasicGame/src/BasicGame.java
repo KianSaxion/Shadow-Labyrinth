@@ -62,7 +62,7 @@ public class BasicGame implements GameLoop {
 
             // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
-            npc.draw(cameraX, cameraY, Variable.SMALL_TILE_SIZE * 66, Variable.SMALL_TILE_SIZE * 59, 0);
+            npc.draw(cameraX, cameraY, Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
 
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
@@ -122,8 +122,8 @@ public class BasicGame implements GameLoop {
         screenState = 0;
         timerStarted = false;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
         player.xSpeed = 0;
         player.ySpeed = 0;
 
