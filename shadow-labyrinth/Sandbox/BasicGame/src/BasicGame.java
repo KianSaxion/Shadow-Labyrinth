@@ -6,6 +6,9 @@ import nl.saxion.app.interaction.MouseEvent;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
+    // Camera properties
+    private int cameraX;
+    private int cameraY;
     // The constant responsible for which screen to display
     public static int screenState = 0;
     int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
@@ -17,6 +20,7 @@ public class BasicGame implements GameLoop {
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
     Lighting lighting;
+    NPC npc = new NPC();
 
     public static long startTime;
     public static long finishTime;
@@ -42,6 +46,7 @@ public class BasicGame implements GameLoop {
         initializeGameState();
     }
 
+
     @Override
     public void loop() {
         if (screenState == 0) {
@@ -49,29 +54,34 @@ public class BasicGame implements GameLoop {
             UserInterface.drawStartScreen();
         } else if (screenState == 1) {
             SaxionApp.clear();
-            lighting.update(320); // Light radius in pixels
             keyHandler.update(player);
+
+            // Update the camera position based on the player
+            cameraX = player.worldX - player.screenX;
+            cameraY = player.worldY - player.screenY;
+
+            // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
+            npc.draw(cameraX, cameraY, Variable.SMALL_TILE_SIZE * 66, Variable.SMALL_TILE_SIZE * 59, 0);
+
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
 
-            // If the player is moving downward (positive ySpeed), check for a collision
+            // check on collision
             if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            }
-            // If there is no collision at the player's intended new position (newX, newY)
-            // Update the player's location if the path is clear
-            else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
 
-            if (currentMap.checkFinish(newX,newY,tileNumbers,tileTypes)){
+            if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
                 if (timerStarted) {
                     finishTime = System.currentTimeMillis();
                     long totalTime = finishTime - startTime;
                     System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
+                    Leaderboard.saveTime(totalTime);
                     timerStarted = false;
                     initializeGameState();
                 }
@@ -80,7 +90,12 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
-            lighting.draw();
+            Lighting.draw();
+
+            // if the screenState is equal to 2, show the leaderboard
+        } else if (screenState == 2) {
+            SaxionApp.clear();
+            UserInterface.drawLeaderboard();
         }
     }
 
@@ -91,7 +106,6 @@ public class BasicGame implements GameLoop {
         } else {
             keyHandler.keyReleased(keyboardEvent);
         }
-
     }
 
     /**
@@ -108,8 +122,8 @@ public class BasicGame implements GameLoop {
         screenState = 0;
         timerStarted = false;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
         player.xSpeed = 0;
         player.ySpeed = 0;
 
@@ -118,10 +132,5 @@ public class BasicGame implements GameLoop {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        lighting = new Lighting(player, 768, 576, 320);
-
-        lighting.addTorch(new Torch(Variable.ORIGINAL_TILE_SIZE * 13,Variable.ORIGINAL_TILE_SIZE * 50, 600));
     }
-
 }
