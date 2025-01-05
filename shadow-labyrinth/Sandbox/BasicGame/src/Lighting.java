@@ -10,67 +10,81 @@ public class Lighting {
 
     private static final int screenWidth = Variable.SCREEN_WIDTH;
     private static final int screenHeight = Variable.SCREEN_HEIGHT;
-    private static final int CIRCLE_SIZE = 400;
-    public static File tempImageFile; // Temporary image file for the light filter
-    private static final boolean ENABLED = false; // Toggle visibility
+    private static int circleSize = 400; // Default light radius
+    private static File filterDefault, filterLarge; // File objects for the two filter images
+    private static File currentFilter; // The currently used filter (default or large)
 
+    private static final boolean ENABLED = true; // Toggle visibility
 
-    // Update circle size and re-generate the filter
-    public static void update() {
+    // Call this once to initialize filters (called in KeyHandler atm)
+    public static void initializeFilters() {
         try {
-            createDarknessFilter(); // Recreate the darkness filter with the updated circle size
+            filterDefault = createDarknessFilter(400); // Default radius
+            filterLarge = createDarknessFilter(600);   // Larger radius
+            currentFilter = filterDefault;             // Start with the default filter
+//            System.out.println("Filters initialized successfully!");
         } catch (IOException e) {
-            throw new RuntimeException("Failed to update darkness filter image.", e);
+            throw new RuntimeException("Failed to initialize darkness filter images.", e);
         }
     }
 
-    private static void createDarknessFilter() throws IOException {
-        // Creates the darkness filter with a light gradient around the player.
-        BufferedImage darknessFilter = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = getGraphics2D(darknessFilter);
-        g2.fillRect(0, 0, screenWidth, screenHeight);
-
-        // Dispose of the Graphics2D object to free resources
-        g2.dispose();
-
-
-        // Save to a temporary image file for SaxionApp
-        tempImageFile = File.createTempFile("darknessFilter", ".png");
-        ImageIO.write(darknessFilter, "png", tempImageFile);
-        tempImageFile.deleteOnExit(); // Delete temp file when closing the game
+    // Update the lighting filter
+    public static void updateFilter(int newCircleSize) {
+        // Only update if the circle size has changed
+        if (circleSize != newCircleSize) {
+            circleSize = newCircleSize;
+            try {
+                if (circleSize == 600) {
+                    currentFilter = filterLarge;
+                } else {
+                    currentFilter = filterDefault;
+                }
+//                System.out.println("Filter updated to: " + (circleSize == 600 ? "Large" : "Default"));
+            } catch (Exception e) {
+                System.out.println("Error updating filter: " + e.getMessage());
+            }
+        }
     }
 
-    private static Graphics2D getGraphics2D(BufferedImage darknessFilter) {
+    private static File createDarknessFilter(int radius) throws IOException {
+        BufferedImage darknessFilter = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = getGraphics2D(darknessFilter, radius);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
+        g2.dispose();
+
+        // Save the filter to a temporary file
+        File tempFile = File.createTempFile("darknessFilter", ".png");
+        ImageIO.write(darknessFilter, "png", tempFile);
+        tempFile.deleteOnExit();
+        return tempFile;
+    }
+
+    private static Graphics2D getGraphics2D(BufferedImage darknessFilter, int radius) {
         Graphics2D g2 = (Graphics2D) darknessFilter.getGraphics();
 
-        // Get the center coordinates of the light circle
-        int centerX = 768 / 2;
-        int centerY = 576 / 2;
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
 
-        // Define gradient colors and fractions
         Color[] colors = {
                 new Color(0, 0, 0, 0.1f),
                 new Color(0, 0, 0, 0.42f),
                 new Color(0, 0, 0, 0.76f),
                 new Color(0, 0, 0, 0.98f)
         };
-        float[] fractions = {0f, 0.5f, 0.8f, 1f}; // Fractions for gradient progression
+        float[] fractions = {0f, 0.5f, 0.8f, 1f};
 
-        // Create a radial gradient paint centered at the light circle
         RadialGradientPaint gradientPaint = new RadialGradientPaint(
-                centerX, centerY, CIRCLE_SIZE / 2.0f, fractions, colors
+                centerX, centerY, radius / 2.0f, fractions, colors
         );
 
-        // Apply the gradient paint to the entire screen
         g2.setPaint(gradientPaint);
         return g2;
     }
 
-
-    // Draws the darkness filter image onto the screen
+    // Draw the current filter on the screen
     public static void draw() {
-        if (ENABLED && tempImageFile != null) {
-            SaxionApp.drawImage(tempImageFile.getAbsolutePath(), 0, 0);
+        if (ENABLED && currentFilter != null) {
+            SaxionApp.drawImage(currentFilter.getAbsolutePath(), 0, 0);
         }
     }
 }
