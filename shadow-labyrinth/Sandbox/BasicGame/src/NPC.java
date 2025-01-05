@@ -5,8 +5,8 @@ public class NPC {
 
     public NPC() {
         // Load NPC images
-        NPCs[0] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingLeft.png";
-        NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingRight.png";
+        NPCs[0] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingRight.png";
+        NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingLeft.png";
         NPCs[2] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingUp.png";
         NPCs[3] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingDown.png";
         NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCType1.png";
