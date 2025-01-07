@@ -3,7 +3,7 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import java.awt.event.KeyEvent;
 
 public class KeyHandler {
-    boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed;
+    boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed;
     private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
 
@@ -54,10 +54,6 @@ public class KeyHandler {
                 // Start the timer once the game has started
                 BasicGame.startTime = System.currentTimeMillis();
                 BasicGame.timerStarted = true;
-                // That is the fix for the big lighting bug
-                // The idea that the dark image will only be created once instead of recreating it in the loop
-                // That is the fix, note for the torches you have to create another method that will register a new file
-                Lighting.initializeFilters();
             }
 
             if (UserInterface.commandNumber == 1) {
@@ -67,6 +63,10 @@ public class KeyHandler {
             if (UserInterface.commandNumber == 3) {
                 System.exit(0);
             }
+        }
+
+        if (key == KeyEvent.VK_ESCAPE) {
+            isEscapePressed = true;
         }
     }
 
@@ -84,6 +84,12 @@ public class KeyHandler {
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = false;
+        }
+        if (key == KeyEvent.VK_ENTER) {
+            isEnterPressed = false;
+        }
+        if (key == KeyEvent.VK_ESCAPE) {
+            isEscapePressed = false;
         }
     }
 

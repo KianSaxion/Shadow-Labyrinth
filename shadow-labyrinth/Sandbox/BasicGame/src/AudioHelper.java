@@ -28,17 +28,14 @@ public class AudioHelper {
      * If no audio is playing, this method does nothing.
      */
     public static synchronized void stop() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
-            try {
-                playerThread.join(); // Ensure the thread has finished
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
             mediaPlayer = null;
             playerThread = null;
         }
     }
+
+
 
     /**
      * Pauses the currently playing audio file.
