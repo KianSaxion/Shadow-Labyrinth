@@ -8,12 +8,12 @@ import java.io.IOException;
 public class BasicGame implements GameLoop {
     // The constant responsible for which screen to display
     public static int screenState = 0;
-    int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
-    Map[] tileTypes = new Map[3];
+    public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
+    public static Map[] tileTypes = new Map[3];
 
 
     // Game Entities
-    Player player = new Player();
+    public static Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
 
@@ -58,6 +58,8 @@ public class BasicGame implements GameLoop {
             if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
+                // Do it later
+//                UserInterface.changePlayerImage(player);
             }
             // If there is no collision at the player's intended new position (newX, newY)
             // Update the player's location if the path is clear
@@ -93,16 +95,16 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
-
+        } else if (screenState == 4) {
+            Minimap.drawMiniMapFullScreen();
         }
     }
 
-    @Override
-    public void keyboardEvent(KeyboardEvent keyboardEvent) {
+    public  void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            keyHandler.keyPressed(keyboardEvent);
+            KeyHandler.keyPressed(keyboardEvent);
         } else {
-            keyHandler.keyReleased(keyboardEvent);
+            KeyHandler.keyReleased(keyboardEvent);
         }
     }
 
@@ -121,7 +123,7 @@ public class BasicGame implements GameLoop {
         timerStarted = false;
 
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 23;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 21;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 22;
         player.xSpeed = 0;
         player.ySpeed = 0;
 
