@@ -51,6 +51,8 @@ public class BasicGame implements GameLoop {
             // Light radius in pixels
             keyHandler.update(player);
             currentMap.drawMap(player, tileNumbers, tileTypes);
+
+
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
 
@@ -96,7 +98,8 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
         } else if (screenState == 4) {
-            Minimap.drawMiniMapFullScreen();
+//            Minimap.drawMiniMapFullScreen();
+            Map.drawMinimap();
         }
     }
 
