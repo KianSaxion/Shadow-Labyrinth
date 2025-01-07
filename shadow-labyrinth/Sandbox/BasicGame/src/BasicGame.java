@@ -71,10 +71,7 @@ public class BasicGame implements GameLoop {
             if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            }
-            // If there is no collision at the player's intended new position (newX, newY)
-            // Update the player's location if the path is clear
-            else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
@@ -99,6 +96,7 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
+
         } else if (screenState == 4) {
             Map.drawMinimap();
         }
