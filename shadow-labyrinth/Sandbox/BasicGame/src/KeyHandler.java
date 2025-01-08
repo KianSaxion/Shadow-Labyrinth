@@ -7,7 +7,7 @@ public class KeyHandler {
     public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed;
     private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
-    public static int miniMapState = 0;
+    private static int miniMapState = 0;
 
     public static void keyPressed(KeyboardEvent e) {
         int key = e.getKeyCode();
@@ -65,6 +65,12 @@ public class KeyHandler {
 
             if (UserInterface.commandNumber == 3) {
                 System.exit(0);
+            }
+        }
+        // If the user presses the escape button on the leaderboard screen, go back to the main screen
+        if (key == KeyEvent.VK_ESCAPE) {
+            if (BasicGame.screenState == 2) {
+                BasicGame.screenState = 0;
             }
         }
 
