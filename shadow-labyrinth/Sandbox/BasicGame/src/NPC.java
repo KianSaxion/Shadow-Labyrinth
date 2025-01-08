@@ -9,7 +9,7 @@ public class NPC {
         NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Right.png";
         NPCs[2] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png";
         NPCs[3] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png";
-        NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Right.png";
+        NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_blue_Right.png";
     }
 
     public void draw(int cameraX, int cameraY, int worldX, int worldY, int NPCNumber) {
