@@ -1,18 +1,15 @@
 import nl.saxion.app.SaxionApp;
 
 public class NPC {
-    private String[] NPCs = new String[8];
+    private String[] NPCs = new String[5];
 
     public NPC() {
         // Load NPC images
-        NPCs[0] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingRight.png";
-        NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingLeft.png";
-        NPCs[2] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingUp.png";
-        NPCs[3] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCFacingDown.png";
-        NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCType1.png";
-        NPCs[5] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCType2.png";
-        NPCs[6] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCType3.png";
-        NPCs[7] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPCType4.png";
+        NPCs[0] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png";
+        NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Right.png";
+        NPCs[2] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png";
+        NPCs[3] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png";
+        NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Right.png";
     }
 
     public void draw(int cameraX, int cameraY, int worldX, int worldY, int NPCNumber) {
