@@ -58,7 +58,7 @@ public class KeyHandler {
                 // That is the fix for the big lighting bug
                 // The idea that the dark image will only be created once instead of recreating it in the loop
                 // That is the fix, note for the torches you have to create another method that will register a new file
-                Lighting.update();
+                Lighting.initializeFilters();
             }
 
             if (UserInterface.commandNumber == 1) {

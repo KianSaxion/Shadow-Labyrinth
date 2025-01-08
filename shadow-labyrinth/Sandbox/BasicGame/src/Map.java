@@ -12,6 +12,7 @@ public class Map {
     public String image;
     public boolean collision;
     public boolean isFinish;
+    public boolean isLightZone;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -19,7 +20,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[4];
+        Map[] tileTypes = new Map[5];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
@@ -35,6 +36,12 @@ public class Map {
         voidWall.collision = false;
         voidWall.isFinish = false;
 
+        Map lightZone = new Map();
+        lightZone.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
+        lightZone.collision = false;
+        lightZone.isFinish = false;
+        lightZone.isLightZone = true;
+
         Map endTile = new Map();
         endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         endTile.collision = false;
@@ -43,7 +50,8 @@ public class Map {
         tileTypes[0] = darkWall;
         tileTypes[1] = lightWall;
         tileTypes[2] = voidWall;
-        tileTypes[3] = endTile;
+        tileTypes[3] = lightZone;
+        tileTypes[4] = endTile;
 
         return tileTypes;
     }
@@ -150,6 +158,17 @@ public class Map {
             return tileTypes[tileNumber] != null && tileTypes[tileNumber].collision;
         }
         return true;
+    }
+
+    public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
+        int col = x / Variable.ORIGINAL_TILE_SIZE;
+        int row = y / Variable.ORIGINAL_TILE_SIZE;
+
+        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
+            int tileNumber = tileNumbers[row][col];
+            return tileTypes[tileNumber] != null && tileTypes[tileNumber].isLightZone;
+        }
+        return false;
     }
 
     // This method is very similar to the checkCollisions method, we might have to do something about
