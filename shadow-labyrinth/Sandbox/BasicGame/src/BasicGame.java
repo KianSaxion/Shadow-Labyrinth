@@ -11,12 +11,12 @@ public class BasicGame implements GameLoop {
     private int cameraY;
     // The constant responsible for which screen to display
     public static int screenState = 0;
-    int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
-    Map[] tileTypes = new Map[3];
+    public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
+    public static Map[] tileTypes = new Map[3];
 
 
     // Game Entities
-    Player player = new Player();
+    public static Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
     Lighting lighting;
@@ -96,15 +96,17 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
+
+        } else if (screenState == 4) {
+            Map.drawMinimap();
         }
     }
 
-    @Override
-    public void keyboardEvent(KeyboardEvent keyboardEvent) {
+    public  void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            keyHandler.keyPressed(keyboardEvent);
+            KeyHandler.keyPressed(keyboardEvent);
         } else {
-            keyHandler.keyReleased(keyboardEvent);
+            KeyHandler.keyReleased(keyboardEvent);
         }
     }
 
