@@ -88,4 +88,10 @@ public final class UserInterface {
             default -> throw new IllegalArgumentException("Invalid button index: " + index);
         };
     }
+
+    public static void changePlayerImage(Player player) {
+        if (player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack.png") || player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack2.png")) {
+            player.imageFile = IMAGE_PATH + "player/MCback.png";
+        }
+    }
 }

@@ -11,15 +11,14 @@ public class BasicGame implements GameLoop {
     private int cameraY;
     // The constant responsible for which screen to display
     public static int screenState = 0;
-    int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
-    Map[] tileTypes = new Map[3];
+    public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
+    public static Map[] tileTypes = new Map[3];
 
 
     // Game Entities
-    Player player = new Player();
+    public static Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
-    Lighting lighting;
     NPC npc = new NPC();
 
     public static long startTime;
@@ -62,7 +61,7 @@ public class BasicGame implements GameLoop {
 
             // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
-            npc.draw(cameraX, cameraY, Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
+            npc.draw(cameraX, cameraY, Variable.SMALL_TILE_SIZE * 42, Variable.SMALL_TILE_SIZE * 152, 0);
 
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
@@ -74,6 +73,13 @@ public class BasicGame implements GameLoop {
             } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
+            }
+
+            // Update the lighting filter based on player's position
+            if (currentMap.checkLightZone(player.worldX, player.worldY, tileNumbers, tileTypes)) {
+                Lighting.updateFilter(600);
+            } else {
+                Lighting.updateFilter(400);
             }
 
             if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
@@ -96,15 +102,17 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
+
+        } else if (screenState == 4) {
+            Map.drawMinimap();
         }
     }
 
-    @Override
-    public void keyboardEvent(KeyboardEvent keyboardEvent) {
+    public  void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
-            keyHandler.keyPressed(keyboardEvent);
+            KeyHandler.keyPressed(keyboardEvent);
         } else {
-            keyHandler.keyReleased(keyboardEvent);
+            KeyHandler.keyReleased(keyboardEvent);
         }
     }
 
