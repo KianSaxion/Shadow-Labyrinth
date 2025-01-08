@@ -68,6 +68,12 @@ public class KeyHandler {
                 System.exit(0);
             }
         }
+        // If the user presses the escape button on the leaderboard screen, go back to the main screen
+        if (key == KeyEvent.VK_ESCAPE) {
+            if (BasicGame.screenState == 2) {
+                BasicGame.screenState = 0;
+            }
+        }
     }
 
     public void keyReleased(KeyboardEvent e) {

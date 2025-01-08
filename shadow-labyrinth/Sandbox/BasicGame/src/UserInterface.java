@@ -1,5 +1,6 @@
 import nl.saxion.app.SaxionApp;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public final class UserInterface {
@@ -15,6 +16,7 @@ public final class UserInterface {
     private static final String KEYBOARD_MAP = IMAGE_PATH + "screen/KeyboardMap.png";
     private static final String EXIT_GAME = IMAGE_PATH + "screen/ExitGame.png";
     private static final String ARROW = IMAGE_PATH + "screen/arrow.png";
+    private static final String LEADERBOARD_SCREEN = IMAGE_PATH + "screen/LeaderboardScreen.png";
 
     // Arrow positions for each button
     private static final int[][] ARROW_COORDINATES = {
@@ -58,12 +60,17 @@ public final class UserInterface {
     public static void drawLeaderboard() {
         // Arraylist with the top10 fastest times
         ArrayList<Double> top10Times = Leaderboard.getTop10Times();
+        SaxionApp.drawImage(LEADERBOARD_SCREEN,0,0,768,576);
 
         int textYCoordinate = 75;
         int countPosition = 0;
 
+        SaxionApp.setTextDrawingColor(Color.white);
+
         // Show the 10 fastest times
         SaxionApp.drawText("Top 10 fastest times", 240, 25, 35);
+        SaxionApp.drawText("Press ESC to go back", 15,35,15);
+
         for (double time : top10Times) {
             countPosition++;
             SaxionApp.drawText(countPosition + " " + time + " seconds", 290, textYCoordinate, 20);
