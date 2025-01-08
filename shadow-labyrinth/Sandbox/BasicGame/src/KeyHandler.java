@@ -26,6 +26,7 @@ public class KeyHandler {
         }
 
         if (key == KeyEvent.VK_UP) {
+            isUpArrowPressed = true;
             if (BasicGame.screenState == 0) {
                 AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
             }
@@ -37,6 +38,7 @@ public class KeyHandler {
         }
 
         if (key == KeyEvent.VK_DOWN) {
+            isUpArrowPressed = true;
             if (BasicGame.screenState == 0) {
                 AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
             }
@@ -95,6 +97,12 @@ public class KeyHandler {
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = false;
+        }
+        if (key == KeyEvent.VK_UP) {
+            isUpArrowPressed = false;
+        }
+        if (key == KeyEvent.VK_DOWN) {
+            isDownArrowPressed = false;
         }
         if (key == KeyEvent.VK_ENTER) {
             isEnterPressed = false;

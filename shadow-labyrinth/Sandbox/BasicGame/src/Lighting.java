@@ -16,7 +16,7 @@ public class Lighting {
 
     private static final boolean ENABLED = true; // Toggle visibility
 
-    // Call this once to initialize filters (called in KeyHandler atm)
+    // Call this once to initialize filters (called in BasicGame init atm)
     public static void initializeFilters() {
         try {
             filterDefault = createDarknessFilter(400);

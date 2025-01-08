@@ -57,7 +57,7 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
 
-            if (!keyHandler.isUpArrowPressed && !keyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
+            if (!KeyHandler.isUpArrowPressed && !KeyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
                 AudioHelper.stop();
             }
 
@@ -134,7 +134,7 @@ public class BasicGame implements GameLoop {
                 youDiedMusicPlayed = true;
             }
 
-            if (keyHandler.isEnterPressed) {
+            if (KeyHandler.isEnterPressed) {
                 youDiedMusicPlayed = false;
                 if (AudioHelper.isPlaying()) {
                     AudioHelper.stop();
