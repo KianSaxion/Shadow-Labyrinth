@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 // This class contains mainly files for the drawing map and also needed methods
 public class Map {
@@ -148,17 +149,28 @@ public class Map {
 
         br.close();
     }
+    public boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes, ArrayList<NPC> npcs) {
+        int col = playerX / Variable.ORIGINAL_TILE_SIZE;
+        int row = playerY / Variable.ORIGINAL_TILE_SIZE;
 
-    public boolean checkCollision(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
-        int col = x / Variable.ORIGINAL_TILE_SIZE;
-        int row = y / Variable.ORIGINAL_TILE_SIZE;
-
+        // Check for tile collisions
         if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
             int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].collision;
+            if (tileTypes[tileNumber] != null && tileTypes[tileNumber].collision) {
+                return true; // Collision with a solid tile
+            }
         }
-        return true;
+
+        // Check for NPC collisions
+        for (NPC npc : npcs) {
+            if (npc.isColliding(playerX, playerY)) {
+                return true; // Collision with an NPC
+            }
+        }
+
+        return false; // No collision
     }
+
 
     public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;

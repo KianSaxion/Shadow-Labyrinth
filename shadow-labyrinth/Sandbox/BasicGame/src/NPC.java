@@ -1,22 +1,22 @@
 import nl.saxion.app.SaxionApp;
 
-public class NPC {
-    private String[] NPCs = new String[5];
+import java.util.ArrayList;
 
-    public NPC() {
-        // Load NPC images
-        NPCs[0] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png";
-        NPCs[1] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Right.png";
-        NPCs[2] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png";
-        NPCs[3] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png";
-        NPCs[4] = "shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Right.png";
+public class NPC {
+    public static ArrayList<NPC> NPCs = new ArrayList<>(); // Store all NPC instances
+    public String imagePath; // Path to the NPC's image
+    public int worldX; // NPC's world X position
+    public int worldY; // NPC's world Y position
+    public boolean isDrawn = false;
+
+    public NPC(String imagePath, int worldX, int worldY) {
+        this.imagePath = imagePath;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        NPCs.add(this); // Add this NPC to the list
     }
 
-    public void draw(int cameraX, int cameraY, int worldX, int worldY, int NPCNumber) {
-        if (NPCNumber < 0 || NPCNumber >= NPCs.length) {
-            throw new IllegalArgumentException("Invalid NPC index: " + NPCNumber);
-        }
-
+    public void draw(int cameraX, int cameraY) {
         // Calculate screen position based on the camera position
         int screenX = worldX - cameraX;
         int screenY = worldY - cameraY;
@@ -30,7 +30,19 @@ public class NPC {
         // Only draw if the NPC is within the screen's visible area
         if (screenX + scaledWidth > 0 && screenX < SaxionApp.getWidth() &&
                 screenY + scaledHeight > 0 && screenY < SaxionApp.getHeight()) {
-            SaxionApp.drawImage(NPCs[NPCNumber], screenX, screenY, scaledWidth, scaledHeight);
+            SaxionApp.drawImage(imagePath, screenX, screenY, scaledWidth, scaledHeight);
         }
+        isDrawn = true;
+    }
+
+    public boolean isColliding(int playerX, int playerY) {
+        // Define the size of the NPC (based on tile size)
+        int npcSize = (int) (Variable.ORIGINAL_TILE_SIZE * 1.5); // Scaling applied
+
+        // Check for overlap between the player's position and the NPC's position
+        return playerX < worldX + npcSize &&
+                playerX + Variable.ORIGINAL_TILE_SIZE > worldX &&
+                playerY < worldY + npcSize &&
+                playerY + Variable.ORIGINAL_TILE_SIZE > worldY;
     }
 }
