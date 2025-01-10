@@ -4,10 +4,10 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import java.awt.event.KeyEvent;
 
 public class KeyHandler {
-    public static boolean upPressed, downPressed, leftPressed, rightPressed, isEnterPressed, isMiniMapPressed;
+    public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed;
     private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
-    public static int miniMapState = 0;
+    private static int miniMapState = 0;
 
     public static void keyPressed(KeyboardEvent e) {
         int key = e.getKeyCode();
@@ -26,6 +26,7 @@ public class KeyHandler {
         }
 
         if (key == KeyEvent.VK_UP) {
+            isUpArrowPressed = true;
             if (BasicGame.screenState == 0) {
                 AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
             }
@@ -37,6 +38,7 @@ public class KeyHandler {
         }
 
         if (key == KeyEvent.VK_DOWN) {
+            isUpArrowPressed = true;
             if (BasicGame.screenState == 0) {
                 AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/clickSound.wav", false);
             }
@@ -55,10 +57,6 @@ public class KeyHandler {
                 // Start the timer once the game has started
                 BasicGame.startTime = System.currentTimeMillis();
                 BasicGame.timerStarted = true;
-                // That is the fix for the big lighting bug
-                // The idea that the dark image will only be created once instead of recreating it in the loop
-                // That is the fix, note for the torches you have to create another method that will register a new file
-                Lighting.initializeFilters();
             }
 
             if (UserInterface.commandNumber == 1) {
@@ -68,6 +66,16 @@ public class KeyHandler {
             if (UserInterface.commandNumber == 3) {
                 System.exit(0);
             }
+        }
+        // If the user presses the escape button on the leaderboard screen, go back to the main screen
+        if (key == KeyEvent.VK_ESCAPE) {
+            if (BasicGame.screenState == 2) {
+                BasicGame.screenState = 0;
+            }
+        }
+
+        if (key == KeyEvent.VK_ESCAPE) {
+            isEscapePressed = true;
         }
 
         // Assume this is within your keyboard event handler method
@@ -95,6 +103,18 @@ public class KeyHandler {
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = false;
+        }
+        if (key == KeyEvent.VK_UP) {
+            isUpArrowPressed = false;
+        }
+        if (key == KeyEvent.VK_DOWN) {
+            isDownArrowPressed = false;
+        }
+        if (key == KeyEvent.VK_ENTER) {
+            isEnterPressed = false;
+        }
+        if (key == KeyEvent.VK_ESCAPE) {
+            isEscapePressed = false;
         }
 
         if (key == KeyEvent.VK_M) {
