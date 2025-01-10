@@ -23,6 +23,8 @@ public class BasicGame implements GameLoop {
     Health playerHealth;
     private TrapManager TrapManager;
     private boolean youDiedMusicPlayed = false;
+    private long lastHealthReductionTime = 0;
+    private static final int HEALTH_COOLDOWN_MS = 550;
 
     public static long startTime;
     public static long finishTime;
@@ -63,6 +65,7 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
+        ;
         if (screenState == 0) {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
@@ -74,6 +77,7 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 1) { // Main game
             SaxionApp.clear();
             keyHandler.update(player);
+            long currentTime = System.currentTimeMillis();
 
             if (!AudioHelper.isPlaying()) {
                 AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
@@ -103,8 +107,21 @@ public class BasicGame implements GameLoop {
                 player.worldY = newY;
             }
 
-            // Delegate traps handling to TrapManager to reduce clutter in BasicGame
-            TrapManager.checkAndDrawTraps(tileNumbers, player, playerHealth, cameraX, cameraY);
+            TrapManager.drawTraps(cameraX, cameraY);
+
+            // Trigger trap activation animations
+            TrapManager.checkTrapActivation(player);
+
+            // Handles health reduction separately from traps with timing
+            if (TrapManager.checkHealthCollision(player) && currentTime - lastHealthReductionTime >= HEALTH_COOLDOWN_MS) {
+                if (playerHealth.reduceHealth()) {
+                    lastHealthReductionTime = currentTime;
+                }
+            }
+
+            if (currentMap.checkHealthReset(player.worldX, player.worldY, tileNumbers, tileTypes)) {
+                playerHealth.resetHealth();
+            }
 
             // Check if the player is dead
             if (playerHealth.isGameOver()) {
@@ -193,6 +210,7 @@ public class BasicGame implements GameLoop {
 
         playerHealth = new Health();
         TrapManager = new TrapManager();
+        TrapManager.initializeTraps(tileNumbers);
         youDiedMusicPlayed = false;
     }
 

@@ -14,7 +14,8 @@ public class Map {
     public boolean collision;
     public boolean isFinish;
     public boolean isLightZone;
-//    public boolean isTrapZone;
+    public boolean isTrapZone; // not needed, just here for testing purposes
+    public boolean resetsHealth;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -22,7 +23,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[6];
+        Map[] tileTypes = new Map[7];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
@@ -48,10 +49,19 @@ public class Map {
         trapZone.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         trapZone.collision = false;
         trapZone.isFinish = false;
-        trapZone.isLightZone = true;
+        trapZone.isLightZone = false;
+        trapZone.isTrapZone = true;
+
+        Map healthResetZone = new Map();
+        healthResetZone.image = "shadow-labyrinth/Sandbox/resources/images/map/healing_well.png";
+        healthResetZone.collision = false;
+        healthResetZone.isFinish = false;
+        healthResetZone.isLightZone = false;
+        healthResetZone.isTrapZone = false;
+        healthResetZone.resetsHealth = true;
 
         Map endTile = new Map();
-        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
+        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/end_gold.png";
         endTile.collision = false;
         endTile.isFinish = true;
 
@@ -61,6 +71,7 @@ public class Map {
         tileTypes[3] = lightZone;
         tileTypes[4] = trapZone;
         tileTypes[5] = endTile;
+        tileTypes[6] = healthResetZone;
 
         return tileTypes;
     }
@@ -190,6 +201,18 @@ public class Map {
         }
         return false;
     }
+
+    public boolean checkHealthReset(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
+        int col = x / Variable.ORIGINAL_TILE_SIZE;
+        int row = y / Variable.ORIGINAL_TILE_SIZE;
+
+        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
+            int tileNumber = tileNumbers[row][col];
+            return tileTypes[tileNumber] != null && tileTypes[tileNumber].resetsHealth;
+        }
+        return false;
+    }
+
 
     // This method is very similar to the checkCollisions method, we might have to do something about
     // The redundancy of the code
