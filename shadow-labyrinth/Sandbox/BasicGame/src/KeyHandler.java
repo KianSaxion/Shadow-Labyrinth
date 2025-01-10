@@ -74,17 +74,12 @@ public class KeyHandler {
             }
         }
 
-        if (key == KeyEvent.VK_ESCAPE) {
-            isEscapePressed = true;
-        }
 
         // Assume this is within your keyboard event handler method
         if (key == KeyEvent.VK_M) {
-
             if (BasicGame.screenState == 1) {
                 // Set screen state based on the toggled value
                 BasicGame.screenState = 4; // Show the screen
-
             }
         }
     }

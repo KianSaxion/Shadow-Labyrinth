@@ -18,7 +18,6 @@ public class BasicGame implements GameLoop {
     public static Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
-    NPC npc = new NPC();
 
     // HP related Game Entities
     Health playerHealth;
@@ -48,12 +47,23 @@ public class BasicGame implements GameLoop {
         // So if you want to initialize new variables use the -
         // initializeGameState method so that the initialization -
         // variables can reset once the game is finished
+        // Initialize NPCs
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10);
+
+
+
+
+        // Initialize other game state variables
         initializeGameState();
     }
 
     @Override
     public void loop() {
-        if (screenState == 0) { // Start screen
+        if (screenState == 0) {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
 
@@ -75,16 +85,20 @@ public class BasicGame implements GameLoop {
 
             // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
-            npc.draw(cameraX, cameraY, Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
+
+            // Draw all NPCs
+            for (NPC npc : NPC.NPCs) {
+                npc.draw(cameraX, cameraY);
+            }
 
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
 
             // check on collision
-            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
+            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes)) {
+            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes, NPC.NPCs)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
@@ -121,7 +135,8 @@ public class BasicGame implements GameLoop {
             Lighting.draw();
             drawHealthBar();
 
-        } else if (screenState == 2) { // Leaderboard screen
+            // if the screenState is equal to 2, show the leaderboard
+        } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
 
@@ -147,7 +162,7 @@ public class BasicGame implements GameLoop {
         }
     }
 
-    public  void keyboardEvent(KeyboardEvent keyboardEvent) {
+    public void keyboardEvent(KeyboardEvent keyboardEvent) {
         if (keyboardEvent.isKeyPressed()) {
             KeyHandler.keyPressed(keyboardEvent);
         } else {
