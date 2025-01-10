@@ -14,7 +14,6 @@ public class Map {
     public boolean collision;
     public boolean isFinish;
     public boolean isLightZone;
-//    public boolean isTrapZone;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -22,7 +21,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[6];
+        Map[] tileTypes = new Map[5];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
@@ -44,12 +43,6 @@ public class Map {
         lightZone.isFinish = false;
         lightZone.isLightZone = true;
 
-        Map trapZone = new Map();
-        trapZone.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
-        trapZone.collision = false;
-        trapZone.isFinish = false;
-        trapZone.isLightZone = true;
-
         Map endTile = new Map();
         endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         endTile.collision = false;
@@ -59,8 +52,7 @@ public class Map {
         tileTypes[1] = lightWall;
         tileTypes[2] = voidWall;
         tileTypes[3] = lightZone;
-        tileTypes[4] = trapZone;
-        tileTypes[5] = endTile;
+        tileTypes[4] = endTile;
 
         return tileTypes;
     }

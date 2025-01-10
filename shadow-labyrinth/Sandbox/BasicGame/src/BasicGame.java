@@ -19,11 +19,6 @@ public class BasicGame implements GameLoop {
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
 
-    // HP related Game Entities
-    Health playerHealth;
-    private TrapManager TrapManager;
-    private boolean youDiedMusicPlayed = false;
-
     public static long startTime;
     public static long finishTime;
     public static boolean timerStarted = false;
@@ -41,12 +36,6 @@ public class BasicGame implements GameLoop {
             throw new RuntimeException(e);
         }
 
-        Lighting.initializeFilters();
-
-        // Call the method to initialize the variables.
-        // So if you want to initialize new variables use the -
-        // initializeGameState method so that the initialization -
-        // variables can reset once the game is finished
         // Initialize NPCs
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43);
@@ -61,26 +50,17 @@ public class BasicGame implements GameLoop {
         initializeGameState();
     }
 
+
     @Override
     public void loop() {
-        if (screenState == 0) { // Start screen
+        if (screenState == 0) {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
-
-            if (!KeyHandler.isUpArrowPressed && !KeyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
-                AudioHelper.stop();
-            }
-
-        } else if (screenState == 1) { // Main game
+        } else if (screenState == 1) {
             SaxionApp.clear();
             keyHandler.update(player);
 
             // Update the camera position
-            if (!AudioHelper.isPlaying()) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
-            }
-
-            // Update the camera position based on the player
             cameraX = player.worldX - player.screenX;
             cameraY = player.worldY - player.screenY;
 
@@ -102,14 +82,6 @@ public class BasicGame implements GameLoop {
             } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes, NPC.NPCs)) {
                 player.worldX = newX;
                 player.worldY = newY;
-            }
-
-            // Delegate traps handling to TrapManager to reduce clutter in BasicGame
-            TrapManager.checkAndDrawTraps(tileNumbers, player, playerHealth, cameraX, cameraY);
-
-            // Check if the player is dead
-            if (playerHealth.isGameOver()) {
-                screenState = 3;
             }
 
             // Update the lighting filter based on player's position
@@ -177,13 +149,5 @@ public class BasicGame implements GameLoop {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        playerHealth = new Health();
-        TrapManager = new TrapManager();
-        youDiedMusicPlayed = false;
-    }
-
-    private void drawHealthBar() {
-        playerHealth.draw();
     }
 }
