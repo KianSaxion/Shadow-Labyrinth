@@ -16,12 +16,12 @@ public class Lighting {
 
     private static final boolean ENABLED = true; // Toggle visibility
 
-    // Call this once to initialize filters (called in KeyHandler atm)
+    // Call this once to initialize filters (called in BasicGame init atm)
     public static void initializeFilters() {
         try {
-            filterDefault = createDarknessFilter(400); // Default radius
-            filterLarge = createDarknessFilter(600);   // Larger radius
-            currentFilter = filterDefault;             // Start with the default filter
+            filterDefault = createDarknessFilter(400);
+            filterLarge = createDarknessFilter(600);
+            currentFilter = filterDefault;
 //            System.out.println("Filters initialized successfully!");
         } catch (IOException e) {
             throw new RuntimeException("Failed to initialize darkness filter images.", e);
