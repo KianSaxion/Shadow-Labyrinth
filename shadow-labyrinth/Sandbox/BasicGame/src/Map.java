@@ -22,7 +22,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[6];
+        Map[] tileTypes = new Map[14];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
@@ -51,9 +51,39 @@ public class Map {
         trapZone.isLightZone = true;
 
         Map endTile = new Map();
-        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
+        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/end_gold_final.png";
         endTile.collision = false;
         endTile.isFinish = true;
+
+        Map grassTile = new Map();
+        grassTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassTile1.png";
+
+        Map grassBrickTile = new Map();
+        grassBrickTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassBrickTile.png";
+
+        Map grassWallBottom = new Map();
+        grassWallBottom.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrass.png";
+        grassWallBottom.collision = true;
+
+        Map grassWallCorner = new Map();
+        grassWallCorner.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassCorner.png";
+        grassWallCorner.collision = true;
+
+        Map grassWallLeft = new Map();
+        grassWallLeft.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassLeft.png";
+        grassWallLeft.collision = true;
+
+        Map grassWallRight = new Map();
+        grassWallRight.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassRight.png";
+        grassWallRight.collision = true;
+
+        Map grassWallTop = new Map();
+        grassWallTop.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassTop.png";
+        grassWallTop.collision = true;
+
+        Map grassWallCornerBottom = new Map();
+        grassWallCornerBottom.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassCorner2.png";
+        grassWallCornerBottom.collision = true;
 
         tileTypes[0] = darkWall;
         tileTypes[1] = lightWall;
@@ -61,6 +91,14 @@ public class Map {
         tileTypes[3] = lightZone;
         tileTypes[4] = trapZone;
         tileTypes[5] = endTile;
+        tileTypes[6] = grassTile;
+        tileTypes[7] = grassBrickTile;
+        tileTypes[8] = grassWallBottom;
+        tileTypes[9] = grassWallCorner;
+        tileTypes[10] = grassWallLeft;
+        tileTypes[11] = grassWallRight;
+        tileTypes[12] = grassWallTop;
+        tileTypes[13] = grassWallCornerBottom;
 
         return tileTypes;
     }
