@@ -140,7 +140,6 @@ public class Map {
 
         final int PLAYER_SIZE = 20;
         SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/player/MCfront.png", playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
-
     }
 
 
