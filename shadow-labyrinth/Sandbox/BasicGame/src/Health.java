@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class Health {
     private static final int MAX_HEALTH = 10; // Maximum health (5 hearts, each heart = 2 health)
-    private int currentHealth = MAX_HEALTH;
-    private ArrayList<String> hearts = new ArrayList<>();
+    private static int currentHealth = MAX_HEALTH;
+    private static ArrayList<String> hearts = new ArrayList<>();
 
     public Health() {
         for (int i = 0; i < MAX_HEALTH / 2; i++) {
@@ -19,7 +19,7 @@ public class Health {
     }
 
     // Update health and return whether the health was reduced
-    public boolean reduceHealth() {
+    public static boolean reduceHealth() {
         if (currentHealth > 0) {
             currentHealth--;
             updateHearts();
@@ -28,7 +28,7 @@ public class Health {
         return false;  // No reduction if health is already zero
     }
 
-    public void updateHearts() {
+    public static void updateHearts() {
         int fullHearts = currentHealth / 2;
         int halfHeart = currentHealth % 2;
 

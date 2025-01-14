@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 public class KeyHandler {
     public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed;
-    private int speed = 10; // Fixed SPEED
+    private static int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
     private static int miniMapState = 0;
 

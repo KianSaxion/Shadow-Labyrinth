@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 // This class contains mainly files for the drawing map and also needed methods
 public class Map {
@@ -14,7 +13,9 @@ public class Map {
     public boolean collision;
     public boolean isFinish;
     public boolean isLightZone;
-//    public boolean isTrapZone;
+    //    public boolean isTrapZone;
+    private static long lastExecutionTime = 0;
+
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -157,7 +158,8 @@ public class Map {
 
         br.close();
     }
-    public boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes, ArrayList<NPC> npcs) {
+
+    public static boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes) {
         int col = playerX / Variable.ORIGINAL_TILE_SIZE;
         int row = playerY / Variable.ORIGINAL_TILE_SIZE;
 
@@ -170,15 +172,43 @@ public class Map {
         }
 
         // Check for NPC collisions
-        for (NPC npc : npcs) {
+        for (NPC npc : NPC.NPCs) {
             if (npc.isColliding(playerX, playerY)) {
                 return true; // Collision with an NPC
+            }
+        }
+
+        long currentTime = System.currentTimeMillis();
+
+        // Check for Monster collisions
+        for (Monster monster : Monster.Monsters) {
+            if (monster.playerIsColliding(playerX, playerY)) {
+                if (currentTime - lastExecutionTime >= 1500) { // creates delay in NPC movements
+//                    Health.reduceHealth();
+                    lastExecutionTime = currentTime;
+                }
+                return true; // Collision with a monster
             }
         }
 
         return false; // No collision
     }
 
+
+    public static boolean isTileWalkable(int x, int y) {
+        // Check bounds to avoid ArrayIndexOutOfBoundsException
+        if (x < 0 || x >= BasicGame.tileNumbers.length || y < 0 || y >= BasicGame.tileNumbers[0].length) {
+            return false; // Out of bounds tiles are not walkable
+        }
+
+        // Get the tile type based on tileNumbers
+        int tileNumber = BasicGame.tileNumbers[x][y];
+
+        // Assuming tileTypes stores attributes like "walkable" or "blocked"
+        Map tileType = BasicGame.tileTypes[tileNumber];
+
+        return tileType.equals("walkable");
+    }
 
     public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;
@@ -203,4 +233,5 @@ public class Map {
         }
         return false;
     }
+
 }

@@ -18,7 +18,7 @@ public class BasicGame implements GameLoop {
     public static Player player = new Player();
     KeyHandler keyHandler = new KeyHandler();
     Map currentMap = new Map();
-
+    
     // HP related Game Entities
     Health playerHealth;
     private TrapManager TrapManager;
@@ -27,6 +27,8 @@ public class BasicGame implements GameLoop {
     public static long startTime;
     public static long finishTime;
     public static boolean timerStarted = false;
+
+    private long lastExecutionTime = 0;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -54,8 +56,8 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10);
 
-
-
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+//        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 40);
 
         // Initialize other game state variables
         initializeGameState();
@@ -76,7 +78,7 @@ public class BasicGame implements GameLoop {
             keyHandler.update(player);
 
             if (!AudioHelper.isPlaying()) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
+//                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
             }
 
             // Update the camera position based on the player
@@ -90,15 +92,34 @@ public class BasicGame implements GameLoop {
             for (NPC npc : NPC.NPCs) {
                 npc.draw(cameraX, cameraY);
             }
+//
+//            System.out.println("Player x: " + player.worldX);
+//            System.out.println("Player y: " + player.worldY);
+
+            long currentTime = System.currentTimeMillis();
+
+            if (currentTime - lastExecutionTime >= 600) { // creates delay in NPC movements
+                for (Monster monster : Monster.Monsters) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                        Monster.update(monster);
+//                        AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                    }
+                }
+                lastExecutionTime = currentTime;
+            }
+
+            for (Monster monster : Monster.Monsters) {
+                Monster.draw(cameraX, cameraY, monster);
+            }
 
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
 
             // check on collision
-            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
+            if (player.ySpeed > 0 && Map.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes, NPC.NPCs)) {
+            } else if (!Map.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
@@ -180,8 +201,8 @@ public class BasicGame implements GameLoop {
         screenState = 0;
         timerStarted = false;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 52;
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 39;
         player.xSpeed = 0;
         player.ySpeed = 0;
 
