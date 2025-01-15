@@ -64,12 +64,15 @@ public class Map {
         endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/end_gold_final.png";
         endTile.collision = false;
         endTile.isFinish = true;
+        endTile.isLightZone = true;
 
         Map grassTile = new Map();
         grassTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassTile1.png";
+        grassTile.isLightZone = true;
 
         Map grassBrickTile = new Map();
         grassBrickTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassBrickTile.png";
+        grassBrickTile.isLightZone = true;
 
         Map grassWallBottom = new Map();
         grassWallBottom.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrass.png";
