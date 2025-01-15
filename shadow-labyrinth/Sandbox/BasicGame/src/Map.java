@@ -192,37 +192,35 @@ public class Map {
 
 
     public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
-        int col = x / Variable.ORIGINAL_TILE_SIZE;
-        int row = y / Variable.ORIGINAL_TILE_SIZE;
-
-        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
-            int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].isLightZone;
-        }
-        return false;
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "LightZone");
     }
 
     public boolean checkHealthReset(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
-        int col = x / Variable.ORIGINAL_TILE_SIZE;
-        int row = y / Variable.ORIGINAL_TILE_SIZE;
-
-        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
-            int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].resetsHealth;
-        }
-        return false;
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "HealthReset");
     }
 
-
-    // This method is very similar to the checkCollisions method, we might have to do something about
-    // The redundancy of the code
     public boolean checkFinish(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "Finish");
+    }
+
+    public boolean checkTileCondition(int x, int y, int[][] tileNumbers, Map[] tileTypes, String conditionType) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;
         int row = y / Variable.ORIGINAL_TILE_SIZE;
 
         if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
             int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].isFinish;
+            Map tile = tileTypes[tileNumber];
+
+            if (tile != null) {
+                switch (conditionType) {
+                    case "LightZone":
+                        return tile.isLightZone;
+                    case "HealthReset":
+                        return tile.resetsHealth;
+                    case "Finish":
+                        return tile.isFinish;
+                }
+            }
         }
         return false;
     }

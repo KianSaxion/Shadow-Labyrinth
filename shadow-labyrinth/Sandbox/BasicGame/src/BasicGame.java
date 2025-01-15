@@ -24,7 +24,7 @@ public class BasicGame implements GameLoop {
     private TrapManager TrapManager;
     private boolean youDiedMusicPlayed = false;
     private long lastHealthReductionTime = 0;
-    private static final int HEALTH_COOLDOWN_MS = 550;
+    private static final int HEALTH_COOLDOWN_MS = 320;
 
     public static long startTime;
     public static long finishTime;
@@ -65,7 +65,6 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
-        ;
         if (screenState == 0) {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
