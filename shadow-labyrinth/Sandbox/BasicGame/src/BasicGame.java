@@ -3,6 +3,7 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
@@ -27,6 +28,8 @@ public class BasicGame implements GameLoop {
     public static long startTime;
     public static long finishTime;
     public static boolean timerStarted = false;
+
+    public static boolean isAddedToCSV = false;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -120,12 +123,14 @@ public class BasicGame implements GameLoop {
 
             if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
                 if (timerStarted) {
+
                     finishTime = System.currentTimeMillis();
                     long totalTime = finishTime - startTime;
+
                     System.out.println("Finished the game in " + (totalTime / 1000.0) + " seconds.");
-                    Leaderboard.saveTime(totalTime);
+
                     timerStarted = false;
-                    initializeGameState();
+                    screenState = 5;
                 }
             }
 
@@ -159,6 +164,26 @@ public class BasicGame implements GameLoop {
 
         } else if (screenState == 4) {
             Map.drawMinimap();
+
+        } else if (screenState == 5) {
+            SaxionApp.clear();
+            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png", 0, 0, 768, 576);
+            SaxionApp.setTextDrawingColor(Color.WHITE);
+
+            long totalTime = finishTime - startTime;
+            double seconds = totalTime / 1000.0;
+
+            SaxionApp.drawText("You finished in "+ seconds + " seconds", 10, 10, 20);
+            SaxionApp.drawText("Press enter to go back", 10, 35, 20);
+
+            if (!isAddedToCSV) {
+                Leaderboard.saveTime(totalTime);
+            }
+            isAddedToCSV = true;
+
+            if (screenState == 5 && KeyHandler.isEnterPressed) {
+                initializeGameState();
+            }
         }
     }
 
@@ -179,6 +204,10 @@ public class BasicGame implements GameLoop {
     public void initializeGameState() {
         screenState = 0;
         timerStarted = false;
+        isAddedToCSV = false;
+
+        startTime = 0;
+        finishTime = 0;
 
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
