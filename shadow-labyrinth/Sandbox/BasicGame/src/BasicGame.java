@@ -23,9 +23,12 @@ public class BasicGame implements GameLoop {
     // HP related Game Entities
     Health playerHealth;
     private TrapManager TrapManager;
-    private boolean youDiedMusicPlayed = false;
     private long lastHealthReductionTime = 0;
     private static final int HEALTH_COOLDOWN_MS = 320;
+
+    //Audio flags
+    private boolean youDiedMusicPlayed = false;
+    private boolean endMusicPlayed = false;
 
     public static long startTime;
     public static long finishTime;
@@ -175,13 +178,18 @@ public class BasicGame implements GameLoop {
                 initializeGameState();
             }
 
-        } else if (screenState == 4) {
+        } else if (screenState == 4) { // Map
             Map.drawMinimap();
 
-        } else if (screenState == 5) {
+        } else if (screenState == 5) { // End screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png", 0, 0, 768, 576);
             SaxionApp.setTextDrawingColor(Color.WHITE);
+
+            if (!endMusicPlayed) {
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_EnterHallownestCut.wav", false);
+                endMusicPlayed = true;
+            }
 
             long totalTime = finishTime - startTime;
             double seconds = totalTime / 1000.0;
@@ -195,6 +203,10 @@ public class BasicGame implements GameLoop {
             isAddedToCSV = true;
 
             if (screenState == 5 && KeyHandler.isEnterPressed) {
+                endMusicPlayed = false;
+                if (AudioHelper.isPlaying()) {
+                    AudioHelper.stop();
+                }
                 initializeGameState();
             }
         }
