@@ -6,14 +6,13 @@ import java.util.Random;
 
 public class Monster {
     public static ArrayList<Monster> Monsters = new ArrayList<>(); // Store all Monsters instances
+    public static int monsterSize = 50;
 
     public String imagePath; // Path to the Monster's image
     public int worldX; // Monster's world X position
     public int worldY; // Monster's world Y position
     public String direction;
     public int speed = 20;
-    public int idleCounter = 0; // Counts the number of frames the monster remains idle
-    public static boolean isDrawn = false;
     public int state = 0;
 
     public Monster(String imagePath, int worldX, int worldY) {
@@ -28,18 +27,11 @@ public class Monster {
         int screenX = monster.worldX - cameraX;
         int screenY = monster.worldY - cameraY;
 
-        // Scaling factor (e.g., 1.5 means 150% of the original size)
-        double scale = 1.5;
-
-        int scaledWidth = (int) (Variable.ORIGINAL_TILE_SIZE * scale);
-        int scaledHeight = (int) (Variable.ORIGINAL_TILE_SIZE * scale);
-
         // Only draw if the NPC is within the screen's visible area
-        if (screenX + scaledWidth > 0 && screenX < SaxionApp.getWidth() &&
-                screenY + scaledHeight > 0 && screenY < SaxionApp.getHeight()) {
-            SaxionApp.drawImage(monster.imagePath, screenX, screenY, scaledWidth, scaledHeight);
+        if (screenX + Variable.ORIGINAL_TILE_SIZE > 0 && screenX < SaxionApp.getWidth() &&
+                screenY + Variable.ORIGINAL_TILE_SIZE > 0 && screenY < SaxionApp.getHeight()) {
+            SaxionApp.drawImage(monster.imagePath, screenX, screenY, monsterSize, monsterSize);
         }
-        isDrawn = true;
     }
 
     public static boolean isMonsterInVisivbleArea(int cameraX, int cameraY, Monster monster) {
@@ -65,109 +57,90 @@ public class Monster {
     }
 
     public boolean playerIsColliding(int playerX, int playerY) {
-        final int PLAYER_X_OFFSET = 45;
+        final int PLAYER_X_OFFSET = 50;
         final int PLAYER_Y_OFFSET = 60;
-        final int MONSTER_SIZE = 20;
 
         playerX -= PLAYER_X_OFFSET;
         playerY -= PLAYER_Y_OFFSET;
 
-
-        return playerX < this.worldX + MONSTER_SIZE &&
+        return playerX < this.worldX &&
                 playerX + Variable.ORIGINAL_TILE_SIZE > this.worldX &&
-                playerY < this.worldY + MONSTER_SIZE &&
+                playerY < this.worldY &&
                 playerY + Variable.ORIGINAL_TILE_SIZE > this.worldY;
     }
 
+
     public static void update(Monster monster) {
-        if (monster.idleCounter > 0) {
-            // If the monster is idle, reduce the idle counter and skip movement
-            monster.idleCounter--;
-            return;
+        int futureX = monster.worldX; // Start with the current position
+        int futureY = monster.worldY;
+
+        setAction(monster); // Determine the monster's action
+        switch (monster.direction) {
+            case "right" -> futureX += monster.speed;
+            case "left" -> futureX -= monster.speed;
+            case "up" -> futureY -= monster.speed;
+            case "down" -> futureY += monster.speed;
         }
 
-        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)) {
+//         Check if movement is valid
+        if (!Map.checkMonsterCollision(futureX , futureY,monsterSize,  BasicGame.tileNumbers, BasicGame.tileTypes)) {
+            // Update the monster's position
+            moveMonster(monster, futureX, futureY);
+        } else {
             resolvePlayerCollision(monster);
-            monster.idleCounter = 2;
-            return; // Skip further actions this frame
         }
-//
-//        if (Map.checkCollision(monster.worldX, monster.worldY, BasicGame.tileNumbers, BasicGame.tileTypes)) {
-//            setAction(monster);
-//        } else {
-            // Normal action setting if no collision
-            setAction(monster);
-
-            // Movement logic
-            if (!moveMonster(monster)) {
-                // If the monster cannot move in its current direction, set idle and retry
-                monster.idleCounter = 2;
-                setAction(monster); // Retry with a new direction
-            }
-//        }
 
     }
 
     private static void resolvePlayerCollision(Monster monster) {
+
+        // Knock the monster back slightly
         int deltaX = BasicGame.player.worldX - monster.worldX;
         int deltaY = BasicGame.player.worldY - monster.worldY;
 
-        // Determine the primary axis of collision
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // Horizontal collision
             if (deltaX > 0) {
-                monster.worldX -= monster.speed; // Move left
+                monster.worldX -= monster.speed;
             } else {
-                monster.worldX += monster.speed; // Move right
+                monster.worldX += monster.speed;
             }
         } else {
-            // Vertical collision
             if (deltaY > 0) {
-                monster.worldY -= monster.speed; // Move up
+                monster.worldY -= monster.speed;
             } else {
-                monster.worldY += monster.speed; // Move down
+                monster.worldY += monster.speed;
             }
         }
 
-        // Set idle state to give the monster time to recover
-        monster.idleCounter = 2; // Pause for 2 frames
-        setAction(monster); // Set a new random direction
+        setAction(monster);
     }
 
-    private static boolean moveMonster(Monster monster) {
-        boolean moved = false; // Tracks whether the monster moved
+    private static void moveMonster(Monster monster, int x, int y) {
+        monster.worldX = x;
+        monster.worldY = y;
 
         if (monster.direction.equals("up")) {
             monster.imagePath = monster.state == 0
                     ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
                     : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
             monster.state = 1 - monster.state;
-            monster.worldY -= monster.speed;
-            moved = true;
         } else if (monster.direction.equals("down")) {
             monster.imagePath = monster.state == 0
                     ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
                     : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
             monster.state = 1 - monster.state;
             monster.worldY += monster.speed;
-            moved = true;
         } else if (monster.direction.equals("left")) {
             monster.imagePath = monster.state == 0
                     ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
                     : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
             monster.state = 1 - monster.state;
-            monster.worldX -= monster.speed;
-            moved = true;
         } else if (monster.direction.equals("right")) {
             monster.imagePath = monster.state == 0
                     ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
                     : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
             monster.state = 1 - monster.state;
-            monster.worldX += monster.speed;
-            moved = true;
         }
-
-        return moved;
     }
 
     public static void setAction(Monster monster) {

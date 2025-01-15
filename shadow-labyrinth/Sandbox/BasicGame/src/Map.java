@@ -159,6 +159,33 @@ public class Map {
         br.close();
     }
 
+    public static boolean checkMonsterCollision(int playerX, int playerY, int size, int[][] tileNumbers, Map[] tileTypes) {
+        int left = playerX;
+        int top = playerY;
+        int right = playerX + size - 1; // Account for width
+        int bottom = playerY + size - 1; // Account for height
+
+        int leftCol = left / Variable.ORIGINAL_TILE_SIZE;
+        int rightCol = right / Variable.ORIGINAL_TILE_SIZE;
+        int topRow = top / Variable.ORIGINAL_TILE_SIZE;
+        int bottomRow = bottom / Variable.ORIGINAL_TILE_SIZE;
+
+        // Check all corners of the bounding box
+        for (int row = topRow; row <= bottomRow; row++) {
+            for (int col = leftCol; col <= rightCol; col++) {
+                if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
+                    int tileNumber = tileNumbers[row][col];
+                    if (tileTypes[tileNumber] != null && tileTypes[tileNumber].collision) {
+                        return true; // Collision with a solid tile
+                    }
+                }
+            }
+        }
+
+        return false; // No tile collision
+    }
+
+
     public static boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes) {
         int col = playerX / Variable.ORIGINAL_TILE_SIZE;
         int row = playerY / Variable.ORIGINAL_TILE_SIZE;
@@ -183,7 +210,7 @@ public class Map {
         // Check for Monster collisions
         for (Monster monster : Monster.Monsters) {
             if (monster.playerIsColliding(playerX, playerY)) {
-                if (currentTime - lastExecutionTime >= 1500) { // creates delay in NPC movements
+                if (currentTime - lastExecutionTime >= 1000) { // creates delay in NPC movements
 //                    Health.reduceHealth();
                     lastExecutionTime = currentTime;
                 }
@@ -194,21 +221,6 @@ public class Map {
         return false; // No collision
     }
 
-
-    public static boolean isTileWalkable(int x, int y) {
-        // Check bounds to avoid ArrayIndexOutOfBoundsException
-        if (x < 0 || x >= BasicGame.tileNumbers.length || y < 0 || y >= BasicGame.tileNumbers[0].length) {
-            return false; // Out of bounds tiles are not walkable
-        }
-
-        // Get the tile type based on tileNumbers
-        int tileNumber = BasicGame.tileNumbers[x][y];
-
-        // Assuming tileTypes stores attributes like "walkable" or "blocked"
-        Map tileType = BasicGame.tileTypes[tileNumber];
-
-        return tileType.equals("walkable");
-    }
 
     public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;

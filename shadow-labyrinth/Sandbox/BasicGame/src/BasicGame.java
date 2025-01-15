@@ -98,7 +98,7 @@ public class BasicGame implements GameLoop {
 
             long currentTime = System.currentTimeMillis();
 
-            if (currentTime - lastExecutionTime >= 600) { // creates delay in NPC movements
+            if (currentTime - lastExecutionTime >= 500) { // creates delay in NPC movements
                 for (Monster monster : Monster.Monsters) {
                     if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
                         Monster.update(monster);
