@@ -51,10 +51,6 @@ public class BasicGame implements GameLoop {
 
         Lighting.initializeFilters();
 
-        // Call the method to initialize the variables.
-        // So if you want to initialize new variables use the -
-        // initializeGameState method so that the initialization -
-        // variables can reset once the game is finished
         // Initialize NPCs
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43);
@@ -64,8 +60,10 @@ public class BasicGame implements GameLoop {
 
 
 
-
-        // Initialize other game state variables
+        // Call the method to initialize the variables.
+        // So if you want to initialize new variables use the -
+        // initializeGameState method so that the initialization -
+        // variables can reset once the game is finished
         initializeGameState();
     }
 
@@ -204,11 +202,15 @@ public class BasicGame implements GameLoop {
 
             if (screenState == 5 && KeyHandler.isEnterPressed) {
                 endMusicPlayed = false;
+                KeyHandler.isEnterPressed = false;
                 if (AudioHelper.isPlaying()) {
                     AudioHelper.stop();
                 }
                 initializeGameState();
             }
+        } else if (screenState == 6) {
+            SaxionApp.clear();
+            UserInterface.drawKeyMap();
         }
     }
 
@@ -230,9 +232,6 @@ public class BasicGame implements GameLoop {
         screenState = 0;
         timerStarted = false;
         isAddedToCSV = false;
-
-        KeyHandler.isEnterPressed = false;
-
 
         startTime = 0;
         finishTime = 0;

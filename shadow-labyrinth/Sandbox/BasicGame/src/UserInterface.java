@@ -17,6 +17,7 @@ public final class UserInterface {
     private static final String EXIT_GAME = IMAGE_PATH + "screen/ExitGame.png";
     private static final String ARROW = IMAGE_PATH + "screen/arrow.png";
     private static final String LEADERBOARD_SCREEN = IMAGE_PATH + "screen/LeaderboardScreen.png";
+    private static final String KEYMAP_SCREEN = IMAGE_PATH + "screen/KeyboardMapScreen.png";
 
     // Arrow positions for each button
     private static final int[][] ARROW_COORDINATES = {
@@ -76,6 +77,21 @@ public final class UserInterface {
             SaxionApp.drawText(countPosition + " " + time + " seconds", 290, textYCoordinate, 20);
             textYCoordinate += 50;
         }
+    }
+
+    public static void drawKeyMap() {
+        SaxionApp.drawImage(KEYMAP_SCREEN, 0,0,768,576);
+
+        SaxionApp.setBorderColor(Color.red);
+        SaxionApp.setFill(Color.orange);
+
+        SaxionApp.drawBorderedText("Press ESC to go back", 15, 10, 18);
+        SaxionApp.drawBorderedText("W - to move forward", 250, 40, 30);
+        SaxionApp.drawBorderedText("A - to move left", 250, 80, 30);
+        SaxionApp.drawBorderedText("S - to move backwards", 250, 120, 30);
+        SaxionApp.drawBorderedText("D - to move right", 250, 160, 30);
+        SaxionApp.drawBorderedText("M - to open minimap", 250, 200, 30);
+        SaxionApp.drawBorderedText("SPACE - to close dialog", 250, 240, 30);
     }
 
     // Helper method to get the appropriate image path for each button
