@@ -23,7 +23,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[14];
+        Map[] tileTypes = new Map[15];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
