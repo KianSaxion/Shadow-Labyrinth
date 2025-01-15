@@ -63,13 +63,17 @@ public class KeyHandler {
                 BasicGame.screenState = 2;
             }
 
+            if (UserInterface.commandNumber == 2) {
+                BasicGame.screenState = 6;
+            }
+
             if (UserInterface.commandNumber == 3) {
                 System.exit(0);
             }
         }
         // If the user presses the escape button on the leaderboard screen, go back to the main screen
         if (key == KeyEvent.VK_ESCAPE) {
-            if (BasicGame.screenState == 2) {
+            if (BasicGame.screenState == 2 || BasicGame.screenState == 6) {
                 BasicGame.screenState = 0;
             }
         }
