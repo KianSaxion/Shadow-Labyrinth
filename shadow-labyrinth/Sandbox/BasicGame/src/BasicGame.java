@@ -59,6 +59,11 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
+<<<<<<< Updated upstream
+=======
+
+        // Initialize other game state variables
+>>>>>>> Stashed changes
         initializeGameState();
     }
 
@@ -110,13 +115,17 @@ public class BasicGame implements GameLoop {
 
             // Handles health reduction separately from traps with timing
             if (TrapManager.checkHealthCollision(player) && currentTime - lastHealthReductionTime >= HEALTH_COOLDOWN_MS) {
-                if (playerHealth.reduceHealth()) {
+                if (Health.reduceHealth()) {
                     lastHealthReductionTime = currentTime;
                 }
             }
 
             if (currentMap.checkHealthReset(player.worldX, player.worldY, tileNumbers, tileTypes)) {
                 playerHealth.resetHealth();
+            }
+
+            if (playerHealth.isGameOver()) {
+                screenState = 3;
             }
 
             for (NPC npc : NPC.NPCs) {
@@ -153,27 +162,12 @@ public class BasicGame implements GameLoop {
                     screenState = 5;
                 }
             }
-            Lighting.draw();
-            drawHealthBar();
 
             // Draw player and other entities
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
-
-            // Draw and check collisions with all NPCs
-            for (NPC npc : NPC.NPCs) {
-                npc.draw(cameraX, cameraY);
-
-                // Check if the player is colliding with this specific NPC
-                if (npc.isColliding(player.worldX, player.worldY)) {
-                    if (!npcInRange) { // Ensure this block runs only once per frame
-                        npcInRange = true; // Mark that the player is near an NPC
-                        player.xSpeed = 0;
-                        player.ySpeed = 0;
-                    }
-                }
-            }
-
+            Lighting.draw();
+            drawHealthBar();
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
             SaxionApp.clear();
@@ -193,6 +187,7 @@ public class BasicGame implements GameLoop {
                 if (AudioHelper.isPlaying()) {
                     AudioHelper.stop();
                 }
+                playerHealth.resetHealth();
                 initializeGameState();
             }
 
@@ -271,9 +266,19 @@ public class BasicGame implements GameLoop {
         TrapManager = new TrapManager();
         TrapManager.initializeTraps(tileNumbers);
         youDiedMusicPlayed = false;
+
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
     }
 
-    private void drawHealthBar() {
-        playerHealth.draw();
+    private void drawHealthBar() {playerHealth.draw();
     }
 }

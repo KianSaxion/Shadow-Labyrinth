@@ -23,7 +23,11 @@ public class Health {
     }
 
     // Reduce health by 1 if health is greater than 0, and update the heart display
+<<<<<<< Updated upstream
     public boolean reduceHealth() {
+=======
+    public static boolean reduceHealth() {
+>>>>>>> Stashed changes
         if (currentHealth > 0) {
             currentHealth--;
             updateHearts();
