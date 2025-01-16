@@ -194,6 +194,7 @@ public class KeyHandler {
 
         }
 
+
         if (leftPressed) {
             player.xSpeed = -speed;
             player.imageFile = toggleFrame ? "shadow-labyrinth/Sandbox/resources/images/player/MCleft.png" : "shadow-labyrinth/Sandbox/resources/images/player/MCleft2.png";

@@ -73,7 +73,7 @@ public class Monster {
 
     public static void update(Monster monster) {
 //        System.out.println("Monster: " + monster.alive);
-        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY) && monster.alive && KeyHandler.isEPressed) {
+        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY) && KeyHandler.isEPressed) {
 //            System.out.println("activated");
             monster.alive = false;
         }
@@ -83,7 +83,6 @@ public class Monster {
 //        System.out.println("Monster X: " + monster.worldX);
 //        System.out.println("Monster Y: " + monster.worldY);
         if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)){
-
             System.out.println("coollusiifdnsf");
         }
 
@@ -102,7 +101,7 @@ public class Monster {
 //         Check if movement is valid
             if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
                 // Update the monster's position
-                moveMonster(monster, futureX, futureY);
+//                moveMonster(monster, futureX, futureY);
                 resolvePlayerCollision(monster);
             }
         }
