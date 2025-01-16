@@ -18,15 +18,23 @@ public class KeyHandler {
 
         if (key == KeyEvent.VK_W) {
             upPressed = true;
+            NPC.activateDialogue = false;
+            Lighting.ENABLED = true;
         }
         if (key == KeyEvent.VK_S) {
             downPressed = true;
+            NPC.activateDialogue = false;
+            Lighting.ENABLED = true;
         }
         if (key == KeyEvent.VK_D) {
             rightPressed = true;
+            NPC.activateDialogue = false;
+            Lighting.ENABLED = true;
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = true;
+            NPC.activateDialogue = false;
+            Lighting.ENABLED = true;
         }
 
         if (key == KeyEvent.VK_UP) {

@@ -24,7 +24,6 @@ public class NPC {
         } else {
             this.loadDialogue = "No dialogue available."; // Fallback for invalid numbers
         }
-        System.out.println("Initialized NPC with number: " + this.number);
         NPCs.add(this); // Add this NPC to the global list
     }
 
@@ -67,7 +66,7 @@ public class NPC {
     }
 
     public static void setDialogue() {
-        dialogues[0] = "Oi, mate!\n Welcome, I see you have been banished to the shadow realm too.\n Well, it happens to the best of us,\n I’m here because I was a bad kid and got banished here by Sinterklaas.\n To escape, you must find the exit in this labyrinth.\n Good luck mate, you’re gonna need it oh and btw,\n look out for Bob, he is dangerous...";
+        dialogues[0] = "Oi, mate!\n Welcome, I see you have been banished to the shadow realm too.\n Well, it happens to the best of us,\n I’m here because I was a bad kid and got banished here by Sinterklaas.\n To escape, you must find the exit in this labyrinth.\n Good luck mate, you’re gonna need it oh and btw,\n look out for the blobs, they are dangerous...";
         dialogues[1] = "Do you see that?\n There are many slimy creatures lurking in the darkness.\n A long time ago, an ancient evil wizard called Bob was banished here,\n because he stole one singular candy from the Kruidvat.\n He tried to escape using magic,\n but he exploded and turned into a lot of blobs.";
         dialogues[2] = "Woa! Another traveler who wants to escape, cool!\n Watch out for the traps,\n they are designed by to make sure you cannot escape!\n You must avoid them,\n otherwise they might trap you,\n because they are traps!";
         dialogues[3] = "What, a traveler??\n Here??\n How is that even possible?\n Nobody has ever come this far, well nobody except of me of course!\n Somewhere in this section is the end of the labyrinth.\n You must find it, before the Blobs find you!\n";
