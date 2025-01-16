@@ -34,8 +34,11 @@ public class BasicGame implements GameLoop {
     public static long finishTime;
     public static boolean timerStarted = false;
 
+    private long lastExecutionTime = 0;
+
     public static boolean isAddedToCSV = false;
 
+    private static long lasTimeExecution = 0;
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -59,11 +62,6 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
-<<<<<<< Updated upstream
-=======
-
-        // Initialize other game state variables
->>>>>>> Stashed changes
         initializeGameState();
     }
 
@@ -98,10 +96,10 @@ public class BasicGame implements GameLoop {
             int newY = player.worldY + player.ySpeed;
 
             // Check for collisions with the map or NPCs
-            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
+            if (player.ySpeed > 0 && Map.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes, NPC.NPCs)) {
+            } else if (!Map.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
@@ -115,7 +113,7 @@ public class BasicGame implements GameLoop {
 
             // Handles health reduction separately from traps with timing
             if (TrapManager.checkHealthCollision(player) && currentTime - lastHealthReductionTime >= HEALTH_COOLDOWN_MS) {
-                if (Health.reduceHealth()) {
+                if (playerHealth.reduceHealth()) {
                     lastHealthReductionTime = currentTime;
                 }
             }
@@ -146,6 +144,25 @@ public class BasicGame implements GameLoop {
                 Lighting.ENABLED = false;
             }
 
+
+            long currentTime2 = System.currentTimeMillis();
+
+            if (currentTime2 - lastExecutionTime >= 500) { // creates delay in NPC movements
+                for (Monster monster : Monster.Monsters) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                        Monster.update(monster);
+                        AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                    }
+                }
+                lastExecutionTime = currentTime;
+            }
+
+            for (Monster monster : Monster.Monsters) {
+                if (monster.alive) {
+                    Monster.draw(cameraX, cameraY, monster);
+                }
+            }
+
             // Update the lighting filter based on player's position
             if (currentMap.checkLightZone(player.worldX, player.worldY, tileNumbers, tileTypes)) {
                 Lighting.updateFilter(600);
@@ -155,19 +172,32 @@ public class BasicGame implements GameLoop {
 
             if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
                 if (timerStarted) {
-
                     finishTime = System.currentTimeMillis();
-
                     timerStarted = false;
                     screenState = 5;
                 }
             }
+            Lighting.draw();
+            drawHealthBar();
 
             // Draw player and other entities
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
-            Lighting.draw();
-            drawHealthBar();
+
+            // Draw and check collisions with all NPCs
+            for (NPC npc : NPC.NPCs) {
+                npc.draw(cameraX, cameraY);
+
+                // Check if the player is colliding with this specific NPC
+                if (npc.isColliding(player.worldX, player.worldY)) {
+                    if (!npcInRange) { // Ensure this block runs only once per frame
+                        npcInRange = true; // Mark that the player is near an NPC
+                        player.xSpeed = 0;
+                        player.ySpeed = 0;
+                    }
+                }
+            }
+
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
             SaxionApp.clear();
