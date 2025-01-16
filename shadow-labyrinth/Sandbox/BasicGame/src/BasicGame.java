@@ -14,7 +14,6 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
-    public final int dialogueState = 3;
 
     // Game Entities
     public static Player player = new Player();
