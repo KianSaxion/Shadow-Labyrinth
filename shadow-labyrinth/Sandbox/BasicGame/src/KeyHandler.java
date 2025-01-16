@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 public class KeyHandler {
     public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed;
+    public static boolean isSpacePressed = false;
     private int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
     private static int miniMapState = 0;
@@ -74,12 +75,18 @@ public class KeyHandler {
             }
         }
 
-
         // Assume this is within your keyboard event handler method
         if (key == KeyEvent.VK_M) {
             if (BasicGame.screenState == 1) {
                 // Set screen state based on the toggled value
                 BasicGame.screenState = 4; // Show the screen
+            }
+        }
+        if (key == KeyEvent.VK_SPACE) {
+            if (NPC.activateDialogue) {
+                NPC.activateDialogue = false; // Close the dialogue when space is pressed
+                UserInterface.dialogueOpen = true; // Ensure dialogueOpen is set to true
+                Lighting.ENABLED = true;
             }
         }
     }

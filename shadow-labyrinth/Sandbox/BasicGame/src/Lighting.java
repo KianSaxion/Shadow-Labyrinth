@@ -14,7 +14,7 @@ public class Lighting {
     private static File filterDefault, filterLarge; // File objects for the two filter images
     private static File currentFilter; // The currently used filter (default or large)
 
-    private static final boolean ENABLED = true; // Toggle visibility
+    public static boolean ENABLED = true; // Toggle visibility
 
     // Call this once to initialize filters (called in BasicGame init atm)
     public static void initializeFilters() {
