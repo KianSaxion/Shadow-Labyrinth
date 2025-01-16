@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 // This class contains mainly files for the drawing map and also needed methods
+
 public class Map {
     public String image;
     public boolean collision;
@@ -209,11 +210,17 @@ public class Map {
 
         // Check for Monster collisions
         for (Monster monster : Monster.Monsters) {
-            if (monster.playerIsColliding(playerX, playerY)) {
+            if (monster.playerIsColliding(playerX, playerY) && monster.alive) {
                 if (currentTime - lastExecutionTime >= 1000) { // creates delay in NPC movements
 //                    Health.reduceHealth();
                     lastExecutionTime = currentTime;
                 }
+//                System.out.println("collision");
+
+                if (KeyHandler.isEPressed) {
+                    monster.alive = false;
+                }
+
                 return true; // Collision with a monster
             }
         }
@@ -234,7 +241,7 @@ public class Map {
     }
 
     // This method is very similar to the checkCollisions method, we might have to do something about
-    // The redundancy of the code
+// The redundancy of the code
     public boolean checkFinish(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;
         int row = y / Variable.ORIGINAL_TILE_SIZE;
