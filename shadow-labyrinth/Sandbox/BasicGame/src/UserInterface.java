@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public final class UserInterface {
 
     private static final String IMAGE_PATH = "shadow-labyrinth/Sandbox/resources/images/";
+    public static String currentDialogue = "";
+    public static boolean dialogueOpen = false; // Flag to track if dialogue is open
 
     // Image paths
     private static final String START_SCREEN = IMAGE_PATH + "screen/startingscreen.png";
@@ -109,5 +111,33 @@ public final class UserInterface {
         if (player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack.png") || player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack2.png")) {
             player.imageFile = IMAGE_PATH + "player/MCback.png";
         }
+    }
+
+    public static void drawNPCDialogue() {
+        int windowX = Variable.ORIGINAL_TILE_SIZE * 2;
+        int windowY = Variable.ORIGINAL_TILE_SIZE / 2;
+        double windowWidth = Variable.SCREEN_WIDTH - (Variable.ORIGINAL_TILE_SIZE * 3);
+        double windowHeight = Variable.ORIGINAL_TILE_SIZE * 4.5;
+
+        drawDialogue(windowX, windowY, windowWidth, windowHeight);
+        windowX += Variable.ORIGINAL_TILE_SIZE;
+        windowY += Variable.ORIGINAL_TILE_SIZE;
+        for(String line : currentDialogue.split("\n")) {
+            SaxionApp.drawText(line, windowX, windowY, 17);
+            windowY += 22;
+        }
+
+        dialogueOpen = true; // Set dialogueOpen to true when dialogue is drawn
+        NPC.activateDialogue = true;
+    }
+
+    public static void drawDialogue(int windowX, int windowY, double windowWidth, double windowHeight) {
+        int height = (int) windowHeight;
+        int width = (int) windowWidth;
+        SaxionApp.setFill(Color.black);
+        SaxionApp.drawRectangle(windowX, windowY, width, height);
+        SaxionApp.setTextDrawingColor(Color.WHITE);
+        SaxionApp.setBorderColor(Color.WHITE);
+        SaxionApp.drawRectangle(windowX+5, windowY+5, width-10, height-10);
     }
 }

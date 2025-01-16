@@ -14,6 +14,7 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
+    public final int dialogueState = 3;
 
     // Game Entities
     public static Player player = new Player();
@@ -48,22 +49,17 @@ public class BasicGame implements GameLoop {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        NPC.setDialogue();
 
         Lighting.initializeFilters();
 
         // Initialize NPCs
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10);
 
-
-
-        // Call the method to initialize the variables.
-        // So if you want to initialize new variables use the -
-        // initializeGameState method so that the initialization -
-        // variables can reset once the game is finished
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43, 1);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
         initializeGameState();
     }
 
@@ -93,15 +89,11 @@ public class BasicGame implements GameLoop {
             // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
 
-            // Draw all NPCs
-            for (NPC npc : NPC.NPCs) {
-                npc.draw(cameraX, cameraY);
-            }
-
+            // Handle movement and collision logic
             int newX = player.worldX + player.xSpeed;
             int newY = player.worldY + player.ySpeed;
 
-            // check on collision
+            // Check for collisions with the map or NPCs
             if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
@@ -109,6 +101,8 @@ public class BasicGame implements GameLoop {
                 player.worldX = newX;
                 player.worldY = newY;
             }
+            // Draw and check collisions with all NPCs
+            boolean npcInRange = false;
 
             TrapManager.drawTraps(cameraX, cameraY);
 
@@ -126,9 +120,22 @@ public class BasicGame implements GameLoop {
                 playerHealth.resetHealth();
             }
 
-            // Check if the player is dead
-            if (playerHealth.isGameOver()) {
-                screenState = 3;
+            for (NPC npc : NPC.NPCs) {
+                npc.draw(cameraX, cameraY);
+
+                // Check if the player is colliding with this specific NPC
+                if (npc.isColliding(player.worldX, player.worldY)) {
+                    if (!npcInRange) { // Ensure this block runs only once per frame
+                        npcInRange = true; // Mark that the player is near an NPC
+                        player.xSpeed = 0;
+                        player.ySpeed = 0;
+                    }
+                }
+            }
+            // Draw the dialogue screen if activated
+            if (NPC.activateDialogue) {
+                UserInterface.drawNPCDialogue();
+                Lighting.ENABLED = false;
             }
 
             // Update the lighting filter based on player's position
@@ -147,12 +154,26 @@ public class BasicGame implements GameLoop {
                     screenState = 5;
                 }
             }
+            Lighting.draw();
+            drawHealthBar();
 
+            // Draw player and other entities
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
-            Lighting.draw();
-            drawHealthBar();
+            // Draw and check collisions with all NPCs
+            for (NPC npc : NPC.NPCs) {
+                npc.draw(cameraX, cameraY);
+
+                // Check if the player is colliding with this specific NPC
+                if (npc.isColliding(player.worldX, player.worldY)) {
+                    if (!npcInRange) { // Ensure this block runs only once per frame
+                        npcInRange = true; // Mark that the player is near an NPC
+                        player.xSpeed = 0;
+                        player.ySpeed = 0;
+                    }
+                }
+            }
 
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
