@@ -4,10 +4,15 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import java.awt.event.KeyEvent;
 
 public class KeyHandler {
-    public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed;
+    public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed, isEPressed;
     private static int speed = 10; // Fixed SPEED
     private boolean toggleFrame = false;
     private static int miniMapState = 0;
+
+//    private static String playerPath = "shadow-labyrinth/Sandbox/resources/images/player/";
+    private static String playerWithSwordPath = "shadow-labyrinth/Sandbox/resources/images/playerSwordAnimation/";
+
+    private static long lastExecutionTime = 0;
 
     public static void keyPressed(KeyboardEvent e) {
         int key = e.getKeyCode();
@@ -82,7 +87,12 @@ public class KeyHandler {
                 BasicGame.screenState = 4; // Show the screen
             }
         }
+
+        if (key == KeyEvent.VK_E) {
+            isEPressed = true;
+        }
     }
+
 
     public static void keyReleased(KeyboardEvent e) {
         int key = e.getKeyCode();
@@ -122,6 +132,17 @@ public class KeyHandler {
                 miniMapState = 0;
             }
         }
+
+        if (key == KeyEvent.VK_E) {
+            long currentTime = System.currentTimeMillis();
+
+            if (currentTime - lastExecutionTime >= 3000) {
+                isEPressed = false;
+                BasicGame.player.imageFile = "shadow-labyrinth/Sandbox/resources/images/player/MCback.png";
+                lastExecutionTime = currentTime;
+            }
+
+        }
     }
 
     private int frameCounter = 0; // Used to control frame switching
@@ -137,6 +158,10 @@ public class KeyHandler {
             player.ySpeed = -speed;
             player.imageFile = toggleFrame ? "shadow-labyrinth/Sandbox/resources/images/player/MCback.png" // ternary operator: condition ? valueIfTrue : valueIfFalse
                     : "shadow-labyrinth/Sandbox/resources/images/player/MCback2.png";
+
+            if (isEPressed) {
+                player.imageFile = playerWithSwordPath + "MCback_swordDown.png";
+            }
         } else if (downPressed) {
             player.ySpeed = speed;
             player.imageFile = toggleFrame ? "shadow-labyrinth/Sandbox/resources/images/player/MCfront.png" : "shadow-labyrinth/Sandbox/resources/images/player/MCfront2.png";

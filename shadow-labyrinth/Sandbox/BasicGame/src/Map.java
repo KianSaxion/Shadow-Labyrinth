@@ -159,7 +159,7 @@ public class Map {
         br.close();
     }
 
-    public static boolean checkMonsterCollision(int playerX, int playerY, int size, int[][] tileNumbers, Map[] tileTypes) {
+    public static boolean checkMonsterCollission(int playerX, int playerY, int size, int[][] tileNumbers, Map[] tileTypes) {
         int left = playerX;
         int top = playerY;
         int right = playerX + size - 1; // Account for width
@@ -176,13 +176,13 @@ public class Map {
                 if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
                     int tileNumber = tileNumbers[row][col];
                     if (tileTypes[tileNumber] != null && tileTypes[tileNumber].collision) {
-                        return true; // Collision with a solid tile
+                        return false; // Collision with a solid tile
                     }
                 }
             }
         }
 
-        return false; // No tile collision
+        return true; // No tile collision
     }
 
 

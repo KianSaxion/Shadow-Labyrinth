@@ -81,6 +81,9 @@ public class BasicGame implements GameLoop {
 //                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
             }
 
+
+
+
             // Update the camera position based on the player
             cameraX = player.worldX - player.screenX;
             cameraY = player.worldY - player.screenY;
@@ -95,6 +98,8 @@ public class BasicGame implements GameLoop {
 //
 //            System.out.println("Player x: " + player.worldX);
 //            System.out.println("Player y: " + player.worldY);
+
+
 
             long currentTime = System.currentTimeMillis();
 
@@ -139,6 +144,7 @@ public class BasicGame implements GameLoop {
                 Lighting.updateFilter(400);
             }
 
+
             if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
                 if (timerStarted) {
                     finishTime = System.currentTimeMillis();
@@ -155,6 +161,7 @@ public class BasicGame implements GameLoop {
 
             Lighting.draw();
             drawHealthBar();
+
 
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {

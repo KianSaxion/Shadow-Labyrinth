@@ -14,6 +14,7 @@ public class Monster {
     public String direction;
     public int speed = 20;
     public int state = 0;
+    public boolean alive = true;
 
     public Monster(String imagePath, int worldX, int worldY) {
         this.imagePath = imagePath;
@@ -83,36 +84,45 @@ public class Monster {
         }
 
 //         Check if movement is valid
-        if (!Map.checkMonsterCollision(futureX , futureY,monsterSize,  BasicGame.tileNumbers, BasicGame.tileTypes)) {
+        if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
             // Update the monster's position
             moveMonster(monster, futureX, futureY);
-        } else {
             resolvePlayerCollision(monster);
         }
-
     }
 
     private static void resolvePlayerCollision(Monster monster) {
+        if (Map.checkCollision(BasicGame.player.worldX, BasicGame.player.worldY, BasicGame.tileNumbers, BasicGame.tileTypes)) {
 
-        // Knock the monster back slightly
-        int deltaX = BasicGame.player.worldX - monster.worldX;
-        int deltaY = BasicGame.player.worldY - monster.worldY;
+            int futureX = monster.worldX;
+            int futureY = monster.worldY;
 
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            if (deltaX > 0) {
-                monster.worldX -= monster.speed;
+            // Knock the monster back slightly
+            int deltaX = BasicGame.player.worldX - monster.worldX;
+            int deltaY = BasicGame.player.worldY - monster.worldY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    futureX -= monster.speed;
+                    if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
+                        monster.worldX -= monster.speed;
+                    } else {
+                        monster.worldX += monster.speed;
+                    }
+                }
             } else {
-                monster.worldX += monster.speed;
+                if (deltaY > 0) {
+                    futureY -= monster.speed;
+                    if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
+                        monster.worldY -= monster.speed;
+                    } else {
+                        monster.worldY += monster.speed;
+                    }
+                }
             }
-        } else {
-            if (deltaY > 0) {
-                monster.worldY -= monster.speed;
-            } else {
-                monster.worldY += monster.speed;
-            }
+
+            setAction(monster);
         }
-
-        setAction(monster);
     }
 
     private static void moveMonster(Monster monster, int x, int y) {
