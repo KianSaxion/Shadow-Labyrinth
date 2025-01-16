@@ -6,14 +6,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 // This class contains mainly files for the drawing map and also needed methods
+
 public class Map {
     public String image;
     public boolean collision;
     public boolean isFinish;
     public boolean isLightZone;
+    //    public boolean isTrapZone;
+    private static long lastExecutionTime = 0;
+
     public boolean isTrapZone; // not needed, just here for testing purposes
     public boolean resetsHealth;
 
@@ -208,7 +211,35 @@ public class Map {
 
         br.close();
     }
-    public boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes, ArrayList<NPC> npcs) {
+
+    public static boolean checkMonsterCollission(int playerX, int playerY, int size, int[][] tileNumbers, Map[] tileTypes) {
+        int left = playerX;
+        int top = playerY;
+        int right = playerX + size - 1; // Account for width
+        int bottom = playerY + size - 1; // Account for height
+
+        int leftCol = left / Variable.ORIGINAL_TILE_SIZE;
+        int rightCol = right / Variable.ORIGINAL_TILE_SIZE;
+        int topRow = top / Variable.ORIGINAL_TILE_SIZE;
+        int bottomRow = bottom / Variable.ORIGINAL_TILE_SIZE;
+
+        // Check all corners of the bounding box
+        for (int row = topRow; row <= bottomRow; row++) {
+            for (int col = leftCol; col <= rightCol; col++) {
+                if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
+                    int tileNumber = tileNumbers[row][col];
+                    if (tileTypes[tileNumber] != null && tileTypes[tileNumber].collision) {
+                        return false; // Collision with a solid tile
+                    }
+                }
+            }
+        }
+
+        return true; // No tile collision
+    }
+
+
+    public static boolean checkCollision(int playerX, int playerY, int[][] tileNumbers, Map[] tileTypes) {
         int col = playerX / Variable.ORIGINAL_TILE_SIZE;
         int row = playerY / Variable.ORIGINAL_TILE_SIZE;
 
@@ -221,9 +252,29 @@ public class Map {
         }
 
         // Check for NPC collisions
-        for (NPC npc : npcs) {
+        for (NPC npc : NPC.NPCs) {
             if (npc.isColliding(playerX, playerY)) {
                 return true; // Collision with an NPC
+            }
+        }
+
+        long currentTime = System.currentTimeMillis();
+
+        // Check for Monster collisions
+        for (Monster monster : Monster.Monsters) {
+            if (Monster.playerIsColliding(playerX, playerY, monster) && monster.alive) {
+                if (currentTime - lastExecutionTime >= 500) { // creates delay in NPC movements
+                    Health.reduceHealth();
+                    lastExecutionTime = currentTime;
+                }
+//                System.out.println("collision");
+
+                if (KeyHandler.isEPressed && monster.alive) {
+                    AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/deadSlime.wav", false);
+                    monster.alive = false;
+                }
+
+                return true; // Collision with a monster
             }
         }
 
@@ -239,6 +290,8 @@ public class Map {
         return checkTileCondition(x, y, tileNumbers, tileTypes, "HealthReset");
     }
 
+    // This method is very similar to the checkCollisions method, we might have to do something about
+// The redundancy of the code
     public boolean checkFinish(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
         return checkTileCondition(x, y, tileNumbers, tileTypes, "Finish");
     }
@@ -264,4 +317,5 @@ public class Map {
         }
         return false;
     }
+
 }

@@ -34,8 +34,11 @@ public class BasicGame implements GameLoop {
     public static long finishTime;
     public static boolean timerStarted = false;
 
+    private long lastExecutionTime = 0;
+
     public static boolean isAddedToCSV = false;
 
+    private static long lasTimeExecution = 0;
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -59,6 +62,19 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
+
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
+
+        // Initialize other game state variables
         initializeGameState();
     }
 
@@ -81,6 +97,7 @@ public class BasicGame implements GameLoop {
                 AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
             }
 
+
             // Update the camera position based on the player
             cameraX = player.worldX - player.screenX;
             cameraY = player.worldY - player.screenY;
@@ -93,10 +110,10 @@ public class BasicGame implements GameLoop {
             int newY = player.worldY + player.ySpeed;
 
             // Check for collisions with the map or NPCs
-            if (player.ySpeed > 0 && currentMap.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
+            if (player.ySpeed > 0 && Map.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
-            } else if (!currentMap.checkCollision(newX, newY, tileNumbers, tileTypes, NPC.NPCs)) {
+            } else if (!Map.checkCollision(newX, newY, tileNumbers, tileTypes)) {
                 player.worldX = newX;
                 player.worldY = newY;
             }
@@ -114,7 +131,10 @@ public class BasicGame implements GameLoop {
                     lastHealthReductionTime = currentTime;
                 }
             }
+                //
+            //DSFAD
 
+            //FASD F DAS
             if (currentMap.checkHealthReset(player.worldX, player.worldY, tileNumbers, tileTypes)) {
                 playerHealth.resetHealth();
             }
@@ -137,6 +157,25 @@ public class BasicGame implements GameLoop {
                 Lighting.ENABLED = false;
             }
 
+
+            long currentTime2 = System.currentTimeMillis();
+
+            if (currentTime2 - lastExecutionTime >= 500) { // creates delay in NPC movements
+                for (Monster monster : Monster.Monsters) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                        Monster.update(monster);
+                        AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                    }
+                }
+                lastExecutionTime = currentTime;
+            }
+
+            for (Monster monster : Monster.Monsters) {
+                if (monster.alive) {
+                    Monster.draw(cameraX, cameraY, monster);
+                }
+            }
+
             // Update the lighting filter based on player's position
             if (currentMap.checkLightZone(player.worldX, player.worldY, tileNumbers, tileTypes)) {
                 Lighting.updateFilter(600);
@@ -144,11 +183,10 @@ public class BasicGame implements GameLoop {
                 Lighting.updateFilter(400);
             }
 
+
             if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
                 if (timerStarted) {
-
                     finishTime = System.currentTimeMillis();
-
                     timerStarted = false;
                     screenState = 5;
                 }
