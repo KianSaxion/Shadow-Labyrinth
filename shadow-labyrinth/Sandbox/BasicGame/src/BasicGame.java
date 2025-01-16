@@ -82,8 +82,6 @@ public class BasicGame implements GameLoop {
             }
 
 
-
-
             // Update the camera position based on the player
             cameraX = player.worldX - player.screenX;
             cameraY = player.worldY - player.screenY;
@@ -95,11 +93,6 @@ public class BasicGame implements GameLoop {
             for (NPC npc : NPC.NPCs) {
                 npc.draw(cameraX, cameraY);
             }
-//
-//            System.out.println("Player x: " + player.worldX);
-//            System.out.println("Player y: " + player.worldY);
-
-
 
             long currentTime = System.currentTimeMillis();
 
@@ -114,7 +107,9 @@ public class BasicGame implements GameLoop {
             }
 
             for (Monster monster : Monster.Monsters) {
-                Monster.draw(cameraX, cameraY, monster);
+                if (monster.alive) {
+                    Monster.draw(cameraX, cameraY, monster);
+                }
             }
 
             int newX = player.worldX + player.xSpeed;

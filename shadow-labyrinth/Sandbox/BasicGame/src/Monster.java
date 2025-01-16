@@ -72,27 +72,44 @@ public class Monster {
 
 
     public static void update(Monster monster) {
-        int futureX = monster.worldX; // Start with the current position
-        int futureY = monster.worldY;
-
-        setAction(monster); // Determine the monster's action
-        switch (monster.direction) {
-            case "right" -> futureX += monster.speed;
-            case "left" -> futureX -= monster.speed;
-            case "up" -> futureY -= monster.speed;
-            case "down" -> futureY += monster.speed;
+//        System.out.println("Monster: " + monster.alive);
+        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY) && monster.alive && KeyHandler.isEPressed) {
+//            System.out.println("activated");
+            monster.alive = false;
         }
 
+//        System.out.println("Player X: " + BasicGame.player.worldX);
+//        System.out.println("Player Y: " + BasicGame.player.worldY);
+//        System.out.println("Monster X: " + monster.worldX);
+//        System.out.println("Monster Y: " + monster.worldY);
+        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)){
+
+            System.out.println("coollusiifdnsf");
+        }
+
+        if (monster.alive) {
+            int futureX = monster.worldX; // Start with the current position
+            int futureY = monster.worldY;
+
+            setAction(monster); // Determine the monster's action
+            switch (monster.direction) {
+                case "right" -> futureX += monster.speed;
+                case "left" -> futureX -= monster.speed;
+                case "up" -> futureY -= monster.speed;
+                case "down" -> futureY += monster.speed;
+            }
+
 //         Check if movement is valid
-        if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
-            // Update the monster's position
-            moveMonster(monster, futureX, futureY);
-            resolvePlayerCollision(monster);
+            if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
+                // Update the monster's position
+                moveMonster(monster, futureX, futureY);
+                resolvePlayerCollision(monster);
+            }
         }
     }
 
     private static void resolvePlayerCollision(Monster monster) {
-        if (Map.checkCollision(BasicGame.player.worldX, BasicGame.player.worldY, BasicGame.tileNumbers, BasicGame.tileTypes)) {
+        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)) {
 
             int futureX = monster.worldX;
             int futureY = monster.worldY;
