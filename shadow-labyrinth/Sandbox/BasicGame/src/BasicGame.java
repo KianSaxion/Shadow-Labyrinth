@@ -39,6 +39,7 @@ public class BasicGame implements GameLoop {
 
     public static boolean isAddedToCSV = false;
 
+    private static long lasTimeExecution = 0;
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -110,7 +111,7 @@ public class BasicGame implements GameLoop {
             int newY = player.worldY + player.ySpeed;
 
             // Check for collisions with the map or NPCs
-            if (player.ySpeed > 0 && Map.checkCollision(newX, newY + 10, tileNumbers, tileTypes, NPC.NPCs)) {
+            if (player.ySpeed > 0 && Map.checkCollision(newX, newY + 10, tileNumbers, tileTypes)) {
                 player.ySpeed = 0;
                 player.xSpeed = 0;
             } else if (!Map.checkCollision(newX, newY, tileNumbers, tileTypes)) {
@@ -155,6 +156,25 @@ public class BasicGame implements GameLoop {
             if (NPC.activateDialogue) {
                 UserInterface.drawNPCDialogue();
                 Lighting.ENABLED = false;
+            }
+
+
+            long currentTime2 = System.currentTimeMillis();
+
+            if (currentTime2 - lastExecutionTime >= 500) { // creates delay in NPC movements
+                for (Monster monster : Monster.Monsters) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                        Monster.update(monster);
+                        AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                    }
+                }
+                lastExecutionTime = currentTime;
+            }
+
+            for (Monster monster : Monster.Monsters) {
+                if (monster.alive) {
+                    Monster.draw(cameraX, cameraY, monster);
+                }
             }
 
             // Update the lighting filter based on player's position
