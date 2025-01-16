@@ -3,51 +3,53 @@ import java.util.List;
 
 public class TrapManager {
     private final List<Trap> traps;
-    private boolean healthReduced; // Track health reduction for the collision cycle
 
     public TrapManager() {
-        this.traps = new ArrayList<>();
-        this.healthReduced = false;
+        traps = new ArrayList<>();
     }
 
-    // Main logic to check trap collisions and draw traps
-    public void checkAndDrawTraps(int[][] tileNumbers, Player player, Health playerHealth, int cameraX, int cameraY) {
+    // Initialize traps based on map configuration (tileType 4)
+    public void initializeTraps(int[][] tileNumbers) {
         for (int row = 0; row < Variable.MAX_MAP_ROW; row++) {
             for (int col = 0; col < Variable.MAX_MAP_COLUMN; col++) {
-                if (tileNumbers[row][col] == 4) { // Trap zone tile
+                if (tileNumbers[row][col] == 4) {  // Trap tile
                     int trapX = col * Variable.ORIGINAL_TILE_SIZE;
                     int trapY = row * Variable.ORIGINAL_TILE_SIZE;
 
-                    // Check if trap already exists in the list; if not, create it
-                    Trap trap = Trap.findTrap(traps, trapX, trapY);
-                    if (trap == null) {
-                        trap = new Trap(trapX, trapY);
-                        traps.add(trap);
+                    if (Trap.findTrap(traps, trapX, trapY) == null) {
+                        traps.add(new Trap(trapX, trapY));
                     }
-
-                    // Check for trap collision with player
-                    if (trap.checkCollision(player.worldX, player.worldY)) {
-                        if (!playerHealth.isGameOver() && !healthReduced) {
-                            // Reduce health only once per collision cycle
-                            if (playerHealth.reduceHealth()) {
-                                trap.activateTrap(); // Trigger trap animation
-                                healthReduced = true; // Mark health reduction for this cycle
-                            }
-                        }
-                    }
-
-                    // Draw the trap
-                    trap.draw(cameraX, cameraY);
                 }
             }
         }
+    }
 
-        // Reset the health reduction flag when the trap resets
+    // Draw traps and animate them
+    public void drawTraps(int cameraX, int cameraY) {
         for (Trap trap : traps) {
-            if (!trap.isActivated()) {
-                healthReduced = false;
-                break;
+            trap.draw(cameraX, cameraY);
+        }
+    }
+
+    // Check for trap activation separately (for animations)
+    public boolean checkTrapActivation(Player player) {
+        boolean activated = false;
+        for (Trap trap : traps) {
+            if (trap.checkCollision(player.worldX, player.worldY)) {
+                trap.activateTrap();
+                activated = true;
             }
         }
+        return activated;
+    }
+
+    // Check only for health collision logic
+    public boolean checkHealthCollision(Player player) {
+        for (Trap trap : traps) {
+            if (trap.checkCollision(player.worldX, player.worldY)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class BasicGame implements GameLoop {
@@ -23,13 +24,18 @@ public class BasicGame implements GameLoop {
     // HP related Game Entities
     Health playerHealth;
     private TrapManager TrapManager;
+    private long lastHealthReductionTime = 0;
+    private static final int HEALTH_COOLDOWN_MS = 320;
+
+    //Audio flags
     private boolean youDiedMusicPlayed = false;
+    private boolean endMusicPlayed = false;
 
     public static long startTime;
     public static long finishTime;
     public static boolean timerStarted = false;
 
-    private static int pauseFrames = 0;
+    public static boolean isAddedToCSV = false;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -75,6 +81,7 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 1) { // Main game
             SaxionApp.clear();
             keyHandler.update(player);
+            long currentTime = System.currentTimeMillis();
 
             if (!AudioHelper.isPlaying()) {
                 AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
@@ -102,6 +109,21 @@ public class BasicGame implements GameLoop {
 
             // Draw and check collisions with all NPCs
             boolean npcInRange = false;
+            TrapManager.drawTraps(cameraX, cameraY);
+
+            // Trigger trap activation animations
+            TrapManager.checkTrapActivation(player);
+
+            // Handles health reduction separately from traps with timing
+            if (TrapManager.checkHealthCollision(player) && currentTime - lastHealthReductionTime >= HEALTH_COOLDOWN_MS) {
+                if (playerHealth.reduceHealth()) {
+                    lastHealthReductionTime = currentTime;
+                }
+            }
+
+            if (currentMap.checkHealthReset(player.worldX, player.worldY, tileNumbers, tileTypes)) {
+                playerHealth.resetHealth();
+            }
 
             for (NPC npc : NPC.NPCs) {
                 npc.draw(cameraX, cameraY);
@@ -128,6 +150,15 @@ public class BasicGame implements GameLoop {
                 Lighting.updateFilter(400);
             }
 
+            if (currentMap.checkFinish(newX, newY, tileNumbers, tileTypes)) {
+                if (timerStarted) {
+
+                    finishTime = System.currentTimeMillis();
+
+                    timerStarted = false;
+                    screenState = 5;
+                }
+            }
             Lighting.draw();
             drawHealthBar();
 
@@ -149,15 +180,12 @@ public class BasicGame implements GameLoop {
                 }
             }
 
-        } else if(screenState ==2)
-
-        {
+            // if the screenState is equal to 2, show the leaderboard
+        } else if (screenState == 2) {
             SaxionApp.clear();
             UserInterface.drawLeaderboard();
 
-        } else if(screenState ==3)
-
-        { // Game over screen
+        } else if (screenState == 3) { // Game over screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/Traps/you_died_full.png", 0, 0, 768, 576);
 
@@ -174,10 +202,41 @@ public class BasicGame implements GameLoop {
                 initializeGameState();
             }
 
-        } else if(screenState ==4)
-
-        {
+        } else if (screenState == 4) { // Map
             Map.drawMinimap();
+
+        } else if (screenState == 5) { // End screen
+            SaxionApp.clear();
+            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png", 0, 0, 768, 576);
+            SaxionApp.setTextDrawingColor(Color.WHITE);
+
+            if (!endMusicPlayed) {
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_EnterHallownestCut.wav", false);
+                endMusicPlayed = true;
+            }
+
+            long totalTime = finishTime - startTime;
+            double seconds = totalTime / 1000.0;
+
+            SaxionApp.drawText("You finished in "+ seconds + " seconds", 10, 10, 20);
+            SaxionApp.drawText("Press enter to go back", 10, 35, 20);
+
+            if (!isAddedToCSV) {
+                Leaderboard.saveTime(totalTime);
+            }
+            isAddedToCSV = true;
+
+            if (screenState == 5 && KeyHandler.isEnterPressed) {
+                endMusicPlayed = false;
+                KeyHandler.isEnterPressed = false;
+                if (AudioHelper.isPlaying()) {
+                    AudioHelper.stop();
+                }
+                initializeGameState();
+            }
+        } else if (screenState == 6) {
+            SaxionApp.clear();
+            UserInterface.drawKeyMap();
         }
     }
 
@@ -194,10 +253,14 @@ public class BasicGame implements GameLoop {
     }
 
     // Method to initialize the main variables of the game, also used to -
-// reset the game once finished.
+    // reset the game once finished.
     public void initializeGameState() {
         screenState = 0;
         timerStarted = false;
+        isAddedToCSV = false;
+
+        startTime = 0;
+        finishTime = 0;
 
         player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
         player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
@@ -212,6 +275,7 @@ public class BasicGame implements GameLoop {
 
         playerHealth = new Health();
         TrapManager = new TrapManager();
+        TrapManager.initializeTraps(tileNumbers);
         youDiedMusicPlayed = false;
     }
 
