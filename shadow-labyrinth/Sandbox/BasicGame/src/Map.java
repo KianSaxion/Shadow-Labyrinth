@@ -210,14 +210,15 @@ public class Map {
 
         // Check for Monster collisions
         for (Monster monster : Monster.Monsters) {
-            if (monster.playerIsColliding(playerX, playerY) && monster.alive) {
-                if (currentTime - lastExecutionTime >= 1000) { // creates delay in NPC movements
-//                    Health.reduceHealth();
+            if (Monster.playerIsColliding(playerX, playerY, monster) && monster.alive) {
+                if (currentTime - lastExecutionTime >= 500) { // creates delay in NPC movements
+                    Health.reduceHealth();
                     lastExecutionTime = currentTime;
                 }
 //                System.out.println("collision");
 
-                if (KeyHandler.isEPressed) {
+                if (KeyHandler.isEPressed && monster.alive) {
+                    AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/deadSlime.wav", false);
                     monster.alive = false;
                 }
 

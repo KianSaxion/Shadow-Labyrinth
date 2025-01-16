@@ -57,35 +57,34 @@ public class Monster {
         return inVisibleArea;
     }
 
-    public boolean playerIsColliding(int playerX, int playerY) {
+    public static boolean playerIsColliding(int playerX, int playerY, Monster monster) {
         final int PLAYER_X_OFFSET = 50;
         final int PLAYER_Y_OFFSET = 60;
+
+        // Define the attack range (can be adjusted based on the game's needs)
+        int attackRange = Variable.ORIGINAL_TILE_SIZE;
+
+        // Check if the player is close enough to the monster
+        boolean isInRange = Math.abs(playerX - monster.worldX) <= attackRange && Math.abs(playerY - monster.worldY) <= attackRange;
+
+        if (isInRange && KeyHandler.isEPressed && monster.alive) { // Assuming "E" is the attack key
+            monster.alive = false; // Kill the monster
+            AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/deadSlime.wav", false);
+        }
 
         playerX -= PLAYER_X_OFFSET;
         playerY -= PLAYER_Y_OFFSET;
 
-        return playerX < this.worldX &&
-                playerX + Variable.ORIGINAL_TILE_SIZE > this.worldX &&
-                playerY < this.worldY &&
-                playerY + Variable.ORIGINAL_TILE_SIZE > this.worldY;
+        boolean isColliding = playerX < monster.worldX &&
+                playerX + Variable.ORIGINAL_TILE_SIZE > monster.worldX &&
+                playerY < monster.worldY &&
+                playerY + Variable.ORIGINAL_TILE_SIZE > monster.worldY;
+
+        return isColliding;
     }
 
 
     public static void update(Monster monster) {
-//        System.out.println("Monster: " + monster.alive);
-        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY) && KeyHandler.isEPressed) {
-//            System.out.println("activated");
-            monster.alive = false;
-        }
-
-//        System.out.println("Player X: " + BasicGame.player.worldX);
-//        System.out.println("Player Y: " + BasicGame.player.worldY);
-//        System.out.println("Monster X: " + monster.worldX);
-//        System.out.println("Monster Y: " + monster.worldY);
-        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)){
-            System.out.println("coollusiifdnsf");
-        }
-
         if (monster.alive) {
             int futureX = monster.worldX; // Start with the current position
             int futureY = monster.worldY;
@@ -101,15 +100,14 @@ public class Monster {
 //         Check if movement is valid
             if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
                 // Update the monster's position
-//                moveMonster(monster, futureX, futureY);
-                resolvePlayerCollision(monster);
+                moveMonster(monster, futureX, futureY);
+//                resolvePlayerCollision(monster);
             }
         }
     }
 
     private static void resolvePlayerCollision(Monster monster) {
-        if (monster.playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY)) {
-
+        if (playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY, monster)) {
             int futureX = monster.worldX;
             int futureY = monster.worldY;
 
@@ -145,28 +143,55 @@ public class Monster {
         monster.worldX = x;
         monster.worldY = y;
 
-        if (monster.direction.equals("up")) {
-            monster.imagePath = monster.state == 0
-                    ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
-                    : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
-            monster.state = 1 - monster.state;
-        } else if (monster.direction.equals("down")) {
-            monster.imagePath = monster.state == 0
-                    ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
-                    : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
-            monster.state = 1 - monster.state;
-            monster.worldY += monster.speed;
-        } else if (monster.direction.equals("left")) {
-            monster.imagePath = monster.state == 0
-                    ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
-                    : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
-            monster.state = 1 - monster.state;
-        } else if (monster.direction.equals("right")) {
-            monster.imagePath = monster.state == 0
-                    ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
-                    : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
-            monster.state = 1 - monster.state;
+        if (monster.imagePath.equals("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png") ||
+                monster.imagePath.equals("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png")) {
+            if (monster.direction.equals("up")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
+                monster.state = 1 - monster.state;
+            } else if (monster.direction.equals("down")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
+                monster.state = 1 - monster.state;
+                monster.worldY += monster.speed;
+            } else if (monster.direction.equals("left")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
+                monster.state = 1 - monster.state;
+            } else if (monster.direction.equals("right")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
+                monster.state = 1 - monster.state;
+            }
+        } else {
+            if (monster.direction.equals("up")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png";
+                monster.state = 1 - monster.state;
+            } else if (monster.direction.equals("down")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png";
+                monster.state = 1 - monster.state;
+                monster.worldY += monster.speed;
+            } else if (monster.direction.equals("left")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png";
+                monster.state = 1 - monster.state;
+            } else if (monster.direction.equals("right")) {
+                monster.imagePath = monster.state == 0
+                        ? "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_2.png"
+                        : "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png";
+                monster.state = 1 - monster.state;
+            }
         }
+
     }
 
     public static void setAction(Monster monster) {

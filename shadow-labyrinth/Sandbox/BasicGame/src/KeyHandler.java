@@ -191,7 +191,6 @@ public class KeyHandler {
                     default -> player.imageFile; // Default case if no direction
                 };
             }
-
         }
 
 

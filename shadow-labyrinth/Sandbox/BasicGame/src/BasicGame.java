@@ -56,8 +56,16 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10);
 
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
-//        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
 
         // Initialize other game state variables
         initializeGameState();
@@ -78,7 +86,7 @@ public class BasicGame implements GameLoop {
             keyHandler.update(player);
 
             if (!AudioHelper.isPlaying()) {
-//                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
             }
 
 
@@ -98,15 +106,17 @@ public class BasicGame implements GameLoop {
 
             if (currentTime - lastExecutionTime >= 500) { // creates delay in NPC movements
                 for (Monster monster : Monster.Monsters) {
-                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster) && monster.alive) {
                         Monster.update(monster);
-//                        AudioHelper.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                        AudioHelper1.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
                     }
                 }
                 lastExecutionTime = currentTime;
             }
 
             for (Monster monster : Monster.Monsters) {
+                Monster.playerIsColliding(player.worldX, player.worldY, monster);
+
                 if (monster.alive) {
                     Monster.draw(cameraX, cameraY, monster);
                 }
@@ -156,7 +166,6 @@ public class BasicGame implements GameLoop {
 
             Lighting.draw();
             drawHealthBar();
-
 
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
