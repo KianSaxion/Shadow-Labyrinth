@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public final class UserInterface {
 
     private static final String IMAGE_PATH = "shadow-labyrinth/Sandbox/resources/images/";
+    public static String currentDialogue = "";
+    public static boolean dialogueOpen = false; // Flag to track if dialogue is open
 
     // Image paths
     private static final String START_SCREEN = IMAGE_PATH + "screen/startingscreen.png";
@@ -17,6 +19,7 @@ public final class UserInterface {
     private static final String EXIT_GAME = IMAGE_PATH + "screen/ExitGame.png";
     private static final String ARROW = IMAGE_PATH + "screen/arrow.png";
     private static final String LEADERBOARD_SCREEN = IMAGE_PATH + "screen/LeaderboardScreen.png";
+    private static final String KEYMAP_SCREEN = IMAGE_PATH + "screen/KeyboardMapScreen.png";
 
     // Arrow positions for each button
     private static final int[][] ARROW_COORDINATES = {
@@ -78,6 +81,21 @@ public final class UserInterface {
         }
     }
 
+    public static void drawKeyMap() {
+        SaxionApp.drawImage(KEYMAP_SCREEN, 0,0,768,576);
+
+        SaxionApp.setBorderColor(Color.red);
+        SaxionApp.setFill(Color.orange);
+
+        SaxionApp.drawBorderedText("Press ESC to go back", 15, 10, 18);
+        SaxionApp.drawBorderedText("W - to move forward", 250, 40, 30);
+        SaxionApp.drawBorderedText("A - to move left", 250, 80, 30);
+        SaxionApp.drawBorderedText("S - to move backwards", 250, 120, 30);
+        SaxionApp.drawBorderedText("D - to move right", 250, 160, 30);
+        SaxionApp.drawBorderedText("M - to open minimap", 250, 200, 30);
+        SaxionApp.drawBorderedText("SPACE - to close dialog", 250, 240, 30);
+    }
+
     // Helper method to get the appropriate image path for each button
     private static String getButtonImagePath(int index) {
         return switch (index) {
@@ -93,5 +111,33 @@ public final class UserInterface {
         if (player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack.png") || player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack2.png")) {
             player.imageFile = IMAGE_PATH + "player/MCback.png";
         }
+    }
+
+    public static void drawNPCDialogue() {
+        int windowX = Variable.ORIGINAL_TILE_SIZE * 2;
+        int windowY = Variable.ORIGINAL_TILE_SIZE / 2;
+        double windowWidth = Variable.SCREEN_WIDTH - (Variable.ORIGINAL_TILE_SIZE * 3);
+        double windowHeight = Variable.ORIGINAL_TILE_SIZE * 4.5;
+
+        drawDialogue(windowX, windowY, windowWidth, windowHeight);
+        windowX += Variable.ORIGINAL_TILE_SIZE;
+        windowY += Variable.ORIGINAL_TILE_SIZE;
+        for(String line : currentDialogue.split("\n")) {
+            SaxionApp.drawText(line, windowX, windowY, 17);
+            windowY += 22;
+        }
+
+        dialogueOpen = true; // Set dialogueOpen to true when dialogue is drawn
+        NPC.activateDialogue = true;
+    }
+
+    public static void drawDialogue(int windowX, int windowY, double windowWidth, double windowHeight) {
+        int height = (int) windowHeight;
+        int width = (int) windowWidth;
+        SaxionApp.setFill(Color.black);
+        SaxionApp.drawRectangle(windowX, windowY, width, height);
+        SaxionApp.setTextDrawingColor(Color.WHITE);
+        SaxionApp.setBorderColor(Color.WHITE);
+        SaxionApp.drawRectangle(windowX+5, windowY+5, width-10, height-10);
     }
 }

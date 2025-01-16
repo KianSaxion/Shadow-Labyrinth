@@ -17,6 +17,8 @@ public class Map {
     //    public boolean isTrapZone;
     private static long lastExecutionTime = 0;
 
+    public boolean isTrapZone; // not needed, just here for testing purposes
+    public boolean resetsHealth;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -24,7 +26,7 @@ public class Map {
     // This method loads two images for stone blocks stored in an array that is accessible within other methods
     // by passing it as an argument using OOP principles.
     public Map[] loadTileTypes() {
-        Map[] tileTypes = new Map[6];
+        Map[] tileTypes = new Map[15];
         Map darkWall = new Map();
         darkWall.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         darkWall.collision = false;
@@ -50,12 +52,54 @@ public class Map {
         trapZone.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
         trapZone.collision = false;
         trapZone.isFinish = false;
-        trapZone.isLightZone = true;
+        trapZone.isLightZone = false;
+        trapZone.isTrapZone = true;
+
+        Map healthResetZone = new Map();
+        healthResetZone.image = "shadow-labyrinth/Sandbox/resources/images/map/healing_well.png";
+        healthResetZone.collision = false;
+        healthResetZone.isFinish = false;
+        healthResetZone.isLightZone = false;
+        healthResetZone.isTrapZone = false;
+        healthResetZone.resetsHealth = true;
 
         Map endTile = new Map();
-        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/redBrick.png";
+        endTile.image = "shadow-labyrinth/Sandbox/resources/images/map/end_gold_final.png";
         endTile.collision = false;
         endTile.isFinish = true;
+        endTile.isLightZone = true;
+
+        Map grassTile = new Map();
+        grassTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassTile1.png";
+        grassTile.isLightZone = true;
+
+        Map grassBrickTile = new Map();
+        grassBrickTile.image = "shadow-labyrinth/Sandbox/resources/images/map/grassBrickTile.png";
+        grassBrickTile.isLightZone = true;
+
+        Map grassWallBottom = new Map();
+        grassWallBottom.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrass.png";
+        grassWallBottom.collision = true;
+
+        Map grassWallCorner = new Map();
+        grassWallCorner.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassCorner.png";
+        grassWallCorner.collision = true;
+
+        Map grassWallLeft = new Map();
+        grassWallLeft.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassLeft.png";
+        grassWallLeft.collision = true;
+
+        Map grassWallRight = new Map();
+        grassWallRight.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassRight.png";
+        grassWallRight.collision = true;
+
+        Map grassWallTop = new Map();
+        grassWallTop.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassTop.png";
+        grassWallTop.collision = true;
+
+        Map grassWallCornerBottom = new Map();
+        grassWallCornerBottom.image = "shadow-labyrinth/Sandbox/resources/images/map/darkWallGrassCorner2.png";
+        grassWallCornerBottom.collision = true;
 
         tileTypes[0] = darkWall;
         tileTypes[1] = lightWall;
@@ -63,6 +107,15 @@ public class Map {
         tileTypes[3] = lightZone;
         tileTypes[4] = trapZone;
         tileTypes[5] = endTile;
+        tileTypes[6] = healthResetZone;
+        tileTypes[7] = grassBrickTile;
+        tileTypes[8] = grassWallBottom;
+        tileTypes[9] = grassWallCorner;
+        tileTypes[10] = grassWallLeft;
+        tileTypes[11] = grassWallRight;
+        tileTypes[12] = grassWallTop;
+        tileTypes[13] = grassWallCornerBottom;
+        tileTypes[14] = grassTile;
 
         return tileTypes;
     }
@@ -104,7 +157,6 @@ public class Map {
 
         final int PLAYER_SIZE = 20;
         SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/player/MCfront.png", playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
-
     }
 
 
@@ -231,25 +283,37 @@ public class Map {
 
 
     public boolean checkLightZone(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
-        int col = x / Variable.ORIGINAL_TILE_SIZE;
-        int row = y / Variable.ORIGINAL_TILE_SIZE;
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "LightZone");
+    }
 
-        if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
-            int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].isLightZone;
-        }
-        return false;
+    public boolean checkHealthReset(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "HealthReset");
     }
 
     // This method is very similar to the checkCollisions method, we might have to do something about
 // The redundancy of the code
     public boolean checkFinish(int x, int y, int[][] tileNumbers, Map[] tileTypes) {
+        return checkTileCondition(x, y, tileNumbers, tileTypes, "Finish");
+    }
+
+    public boolean checkTileCondition(int x, int y, int[][] tileNumbers, Map[] tileTypes, String conditionType) {
         int col = x / Variable.ORIGINAL_TILE_SIZE;
         int row = y / Variable.ORIGINAL_TILE_SIZE;
 
         if (col >= 0 && col < Variable.MAX_MAP_COLUMN && row >= 0 && row < Variable.MAX_MAP_ROW) {
             int tileNumber = tileNumbers[row][col];
-            return tileTypes[tileNumber] != null && tileTypes[tileNumber].isFinish;
+            Map tile = tileTypes[tileNumber];
+
+            if (tile != null) {
+                switch (conditionType) {
+                    case "LightZone":
+                        return tile.isLightZone;
+                    case "HealthReset":
+                        return tile.resetsHealth;
+                    case "Finish":
+                        return tile.isFinish;
+                }
+            }
         }
         return false;
     }

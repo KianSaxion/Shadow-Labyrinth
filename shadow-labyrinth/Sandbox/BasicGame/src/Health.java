@@ -1,4 +1,5 @@
 import nl.saxion.app.SaxionApp;
+
 import java.util.ArrayList;
 
 public class Health {
@@ -7,9 +8,7 @@ public class Health {
     private static ArrayList<String> hearts = new ArrayList<>();
 
     public Health() {
-        for (int i = 0; i < MAX_HEALTH / 2; i++) {
-            hearts.add("shadow-labyrinth/Sandbox/resources/images/Hearts/heart_full.png");
-        }
+        resetHearts();
     }
 
     public void draw() {
@@ -18,16 +17,31 @@ public class Health {
         }
     }
 
+    // Reset health to maximum and update the hearts display
+    public void resetHealth() {
+        currentHealth = MAX_HEALTH;
+        resetHearts();
+    }
+
+
     // Update health and return whether the health was reduced
     public static boolean reduceHealth() {
         if (currentHealth > 0) {
             currentHealth--;
             updateHearts();
-            return true;  // Return true when health is reduced
+            return true;
         }
-        return false;  // No reduction if health is already zero
+        return false;
     }
 
+    private void resetHearts() {
+        hearts.clear();
+        for (int i = 0; i < MAX_HEALTH / 2; i++) {
+            hearts.add("shadow-labyrinth/Sandbox/resources/images/Hearts/heart_full.png");
+        }
+    }
+
+    // Update the hearts display based on current health
     public static void updateHearts() {
         int fullHearts = currentHealth / 2;
         int halfHeart = currentHealth % 2;
@@ -41,6 +55,8 @@ public class Health {
         }
     }
 
+
+    // Return true if the player's health is 0
     public boolean isGameOver() {
         return currentHealth == 0;
     }
