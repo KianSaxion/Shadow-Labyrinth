@@ -72,6 +72,10 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             UserInterface.drawStartScreen();
 
+            if (!AudioHelper3.isPlaying()) {
+                AudioHelper3.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_HollowKnightCut.wav", true);
+            }
+
             if (!KeyHandler.isUpArrowPressed && !KeyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
                 AudioHelper.stop();
             }
@@ -80,6 +84,10 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             keyHandler.update(player);
             long currentTime = System.currentTimeMillis();
+
+            if (AudioHelper3.isPlaying()) {
+                AudioHelper3.stop();
+            }
 
             if (!AudioHelper.isPlaying()) {
                 AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
