@@ -1,5 +1,4 @@
 import nl.saxion.app.SaxionApp;
-
 import java.util.ArrayList;
 
 public class Health {
@@ -54,7 +53,6 @@ public class Health {
             hearts.add("shadow-labyrinth/Sandbox/resources/images/Hearts/heart_half.png");
         }
     }
-
 
     // Return true if the player's health is 0
     public boolean isGameOver() {
