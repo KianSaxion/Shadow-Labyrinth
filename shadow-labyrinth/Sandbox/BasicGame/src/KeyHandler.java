@@ -112,6 +112,13 @@ public class KeyHandler {
     }
 
 
+    public static void hide() {
+        if (NPC.activateDialogue) {
+            NPC.activateDialogue = false; // Close the dialogue when space is pressed
+            UserInterface.dialogueOpen = true; // Ensure dialogueOpen is set to true
+            Lighting.ENABLED = true;
+        }
+    }
     public static void keyReleased(KeyboardEvent e) {
         int key = e.getKeyCode();
 

@@ -60,8 +60,17 @@ public class NPC {
         if (collision) {
             UserInterface.currentDialogue = this.loadDialogue;
             UserInterface.drawNPCDialogue();
-        }
+        } else {
+            // Define the attack range (can be adjusted based on the game's needs)
+            int attackRange = Variable.ORIGINAL_TILE_SIZE;
 
+            // Check if the player is close enough to the monster
+            boolean isInRange = Math.abs(playerX - this.worldX) <= attackRange && Math.abs(playerY - this.worldY) <= attackRange;
+
+            if (isInRange) {
+                KeyHandler.hide();
+            }
+        }
         return collision; // Return true if there's a collision
     }
 
