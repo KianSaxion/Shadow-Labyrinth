@@ -53,18 +53,13 @@ public class BasicGame implements GameLoop {
 
         Lighting.initializeFilters();
 
-        // Call the method to initialize the variables.
-        // So if you want to initialize new variables use the -
-        // initializeGameState method so that the initialization -
-        // variables can reset once the game is finished
         // Initialize NPCs
+
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43, 1);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
-
-        // Initialize other game state variables
         initializeGameState();
     }
 
@@ -106,9 +101,9 @@ public class BasicGame implements GameLoop {
                 player.worldX = newX;
                 player.worldY = newY;
             }
-
             // Draw and check collisions with all NPCs
             boolean npcInRange = false;
+
             TrapManager.drawTraps(cameraX, cameraY);
 
             // Trigger trap activation animations
