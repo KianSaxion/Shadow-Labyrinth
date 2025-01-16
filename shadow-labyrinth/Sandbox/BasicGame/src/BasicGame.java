@@ -39,6 +39,7 @@ public class BasicGame implements GameLoop {
     public static boolean isAddedToCSV = false;
 
     private static long lasTimeExecution = 0;
+
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -237,7 +238,7 @@ public class BasicGame implements GameLoop {
             long totalTime = finishTime - startTime;
             double seconds = totalTime / 1000.0;
 
-            SaxionApp.drawText("You finished in "+ seconds + " seconds", 10, 10, 20);
+            SaxionApp.drawText("You finished in " + seconds + " seconds", 10, 10, 20);
             SaxionApp.drawText("Press enter to go back", 10, 35, 20);
 
             if (!isAddedToCSV) {
@@ -309,6 +310,7 @@ public class BasicGame implements GameLoop {
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
     }
 
-    private void drawHealthBar() {playerHealth.draw();
+    private void drawHealthBar() {
+        playerHealth.draw();
     }
 }
