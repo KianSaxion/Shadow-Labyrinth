@@ -14,6 +14,7 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
+    public static boolean miniMapActivate = false;
 
     // Game Entities
     public static Player player = new Player();
@@ -230,11 +231,16 @@ public class BasicGame implements GameLoop {
                     AudioHelper.stop();
                 }
                 playerHealth.resetHealth();
+                miniMapActivate = false;
                 initializeGameState();
             }
 
-        } else if (screenState == 4) { // Map
-            Map.drawMinimap();
+
+        } else if (screenState == 4) {
+            if(miniMapActivate){
+                Map.drawMinimap();
+            }
+
 
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();
@@ -308,6 +314,14 @@ public class BasicGame implements GameLoop {
         TrapManager = new TrapManager();
         TrapManager.initializeTraps(tileNumbers);
         youDiedMusicPlayed = false;
+        miniMapActivate = true;
+
+        // Reset the visited tiles for the minimap
+        for (int row = 0; row < Variable.MAX_MAP_ROW; row++) {
+            for (int col = 0; col < Variable.MAX_MAP_COLUMN; col++) {
+                Map.visitedTiles[row][col] = false;
+            }
+        }
 
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
@@ -320,6 +334,7 @@ public class BasicGame implements GameLoop {
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
     }
+
 
     private void drawHealthBar() {
         playerHealth.draw();
