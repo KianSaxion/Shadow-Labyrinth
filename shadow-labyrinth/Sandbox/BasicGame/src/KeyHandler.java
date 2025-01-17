@@ -69,6 +69,10 @@ public class KeyHandler {
                 // Start the timer once the game has started
                 BasicGame.startTime = System.currentTimeMillis();
                 BasicGame.timerStarted = true;
+
+                for (Monster monster : Monster.Monsters) {
+                    monster.alive = true;
+                }
             }
 
             if (UserInterface.commandNumber == 1) {
