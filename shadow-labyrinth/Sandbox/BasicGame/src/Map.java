@@ -19,6 +19,7 @@ public class Map {
 
     public boolean isTrapZone; // not needed, just here for testing purposes
     public boolean resetsHealth;
+    public static boolean miniMapActivate = false;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -121,7 +122,7 @@ public class Map {
     }
 
     // 2d array to check whether the player was on that specific tile
-    private static final boolean[][] visitedTiles = new boolean[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
+    static final boolean[][] visitedTiles = new boolean[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
 
     // This method draws minimap based on the tiles and whether the player was on that tile or not
     public static void drawMinimap() {
@@ -157,6 +158,7 @@ public class Map {
 
         final int PLAYER_SIZE = 20;
         SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/player/MCfront.png", playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+
     }
 
 

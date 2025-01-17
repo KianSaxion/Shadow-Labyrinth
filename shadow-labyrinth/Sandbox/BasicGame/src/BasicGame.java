@@ -16,6 +16,7 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
+    public static boolean miniMapActivate = false;
 
     // Game Entities
     public static Player player = new Player();
@@ -40,6 +41,7 @@ public class BasicGame implements GameLoop {
 
     public static boolean isAddedToCSV = false;
 
+    private static long lasTimeExecution = 0;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -259,11 +261,16 @@ public class BasicGame implements GameLoop {
                     AudioHelper.stop();
                 }
                 playerHealth.resetHealth();
+                miniMapActivate = false;
                 initializeGameState();
             }
 
-        } else if (screenState == 4) { // Map
-            Map.drawMinimap();
+
+        } else if (screenState == 4) {
+            if(miniMapActivate){
+                Map.drawMinimap();
+            }
+
 
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();

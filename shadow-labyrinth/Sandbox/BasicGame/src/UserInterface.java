@@ -93,7 +93,9 @@ public final class UserInterface {
         SaxionApp.drawBorderedText("S - to move backwards", 250, 120, 30);
         SaxionApp.drawBorderedText("D - to move right", 250, 160, 30);
         SaxionApp.drawBorderedText("M - to open minimap", 250, 200, 30);
-        SaxionApp.drawBorderedText("SPACE - to close dialog", 250, 240, 30);
+        SaxionApp.drawBorderedText("E - to attack", 250, 240, 30);
+        SaxionApp.drawBorderedText("SPACE - to close dialog", 250, 280, 30);
+
     }
 
     // Helper method to get the appropriate image path for each button
