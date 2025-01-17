@@ -158,9 +158,9 @@ public class BasicGame implements GameLoop {
 
             if (currentTime2 - lastExecutionTime >= 500) { // creates delay in NPC movements
                 for (Monster monster : Monster.Monsters) {
-                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster)) {
+                    if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster) && monster.alive) {
                         Monster.update(monster);
-                        AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                        AudioHelper3.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
                     }
                 }
                 lastExecutionTime = currentTime;
@@ -186,12 +186,10 @@ public class BasicGame implements GameLoop {
                     screenState = 5;
                 }
             }
+
             Lighting.draw();
             drawHealthBar();
 
-            // Draw player and other entities
-            SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
-                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
             // Draw and check collisions with all NPCs
             for (NPC npc : NPC.NPCs) {
@@ -207,6 +205,11 @@ public class BasicGame implements GameLoop {
                 }
             }
 
+            // Draw player and other entities
+            SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
+                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
+
+            
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
             SaxionApp.clear();
@@ -290,8 +293,8 @@ public class BasicGame implements GameLoop {
         startTime = 0;
         finishTime = 0;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13;
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50;
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 100; // 13
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 52; // 500
         player.xSpeed = 0;
         player.ySpeed = 0;
 
