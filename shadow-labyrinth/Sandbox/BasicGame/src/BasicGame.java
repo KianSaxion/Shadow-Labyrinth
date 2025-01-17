@@ -293,8 +293,8 @@ public class BasicGame implements GameLoop {
         startTime = 0;
         finishTime = 0;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 100; // 13
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 52; // 500
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13; // 13
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50; // 50
         player.xSpeed = 0;
         player.ySpeed = 0;
 
