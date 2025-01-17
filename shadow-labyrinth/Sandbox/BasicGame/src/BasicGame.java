@@ -5,6 +5,8 @@ import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BasicGame implements GameLoop {
     // Camera properties
@@ -38,7 +40,6 @@ public class BasicGame implements GameLoop {
 
     public static boolean isAddedToCSV = false;
 
-    private static long lasTimeExecution = 0;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
@@ -63,6 +64,17 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
+
         initializeGameState();
     }
 
@@ -84,6 +96,7 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             keyHandler.update(player);
             long currentTime = System.currentTimeMillis();
+
 
             if (AudioHelper3.isPlaying()) {
                 AudioHelper3.stop();
@@ -126,6 +139,7 @@ public class BasicGame implements GameLoop {
                     lastHealthReductionTime = currentTime;
                 }
             }
+
 
             if (currentMap.checkHealthReset(player.worldX, player.worldY, tileNumbers, tileTypes)) {
                 playerHealth.resetHealth();
@@ -190,6 +204,21 @@ public class BasicGame implements GameLoop {
             Lighting.draw();
             drawHealthBar();
 
+            // Calculate the elapsed time
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+            // Format the elapsed time into HH:mm:ss
+            int milliseconds = (int) (elapsedTime % 1000);
+            int seconds = (int) (elapsedTime / 1000) % 60;
+            int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
+
+            // Update the current time string
+            String elapsedTime1 = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds);
+
+            // Display the timer on the screen
+            SaxionApp.setTextDrawingColor(Color.WHITE);
+            SaxionApp.drawText("Time: " + elapsedTime1, 540, 40, 20);
+
 
             // Draw and check collisions with all NPCs
             for (NPC npc : NPC.NPCs) {
@@ -209,7 +238,7 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
 
-            
+
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
             SaxionApp.clear();
@@ -293,8 +322,8 @@ public class BasicGame implements GameLoop {
         startTime = 0;
         finishTime = 0;
 
-        player.worldX = Variable.ORIGINAL_TILE_SIZE * 100; // 13
-        player.worldY = Variable.ORIGINAL_TILE_SIZE * 52; // 500
+        player.worldX = Variable.ORIGINAL_TILE_SIZE * 13; // 13
+        player.worldY = Variable.ORIGINAL_TILE_SIZE * 50; // 50
         player.xSpeed = 0;
         player.ySpeed = 0;
 
@@ -308,17 +337,6 @@ public class BasicGame implements GameLoop {
         TrapManager = new TrapManager();
         TrapManager.initializeTraps(tileNumbers);
         youDiedMusicPlayed = false;
-
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
     }
 
     private void drawHealthBar() {
