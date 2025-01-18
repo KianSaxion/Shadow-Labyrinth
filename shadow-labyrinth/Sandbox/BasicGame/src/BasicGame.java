@@ -206,22 +206,6 @@ public class BasicGame implements GameLoop {
             Lighting.draw();
             drawHealthBar();
 
-            // Calculate the elapsed time
-//            long elapsedTime = System.currentTimeMillis() - startTime;
-
-            // Format the elapsed time into HH:mm:ss
-//            int milliseconds = (int) (elapsedTime % 1000);
-//            int seconds = (int) (elapsedTime / 1000) % 60;
-//            int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
-
-            // Update the current time string
-//            String elapsedTime1 = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds);
-
-            // Display the timer on the screen
-//            SaxionApp.setTextDrawingColor(Color.WHITE);
-//            SaxionApp.drawText("Time: " + elapsedTime1, 540, 40, 20);
-
-
             // Draw and check collisions with all NPCs
             for (NPC npc : NPC.NPCs) {
                 npc.draw(cameraX, cameraY);
