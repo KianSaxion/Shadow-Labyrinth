@@ -123,11 +123,20 @@ public class Map {
     // 2d array to check whether the player was on that specific tile
     static final boolean[][] visitedTiles = new boolean[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
 
+    // This method resets the visibility of the map after the player dies or finishes the game
+    public static void resetMinimapVisitedTiles() {
+        for (int i = 0; i < visitedTiles.length; i++) {
+            for (int j = 0; j < visitedTiles[i].length; j++) {
+                visitedTiles[i][j] = false;
+            }
+        }
+    }
+
     // This method draws minimap based on the tiles and whether the player was on that tile or not
     public static void drawMinimap() {
         SaxionApp.setBackgroundColor(Color.black);
         SaxionApp.setTextDrawingColor(Color.white);
-        SaxionApp.drawText("To exit the map, press ESC.", 300, 70, 30);
+        SaxionApp.drawText("To exit the map, press ESC or move.", 150, 500, 30);
 
         SaxionApp.setFill(Color.darkGray);
         SaxionApp.setBorderColor(Color.darkGray);
@@ -150,6 +159,7 @@ public class Map {
             x = 40;
             y += TILE_SIZE_MINIMAP;
         }
+
 
         // Draw player on the map based on the location that it is in the game
         int playerX = (BasicGame.player.worldX / Variable.ORIGINAL_TILE_SIZE) * TILE_SIZE_MINIMAP + 35;
