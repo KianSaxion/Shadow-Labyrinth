@@ -12,7 +12,7 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
-    public static boolean miniMapActivate = false;
+    public static boolean isMiniMapPressed = false;
 
     // Game Entities
     public static Player player = new Player();
@@ -253,7 +253,9 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
                     (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE,
                     Variable.ORIGINAL_TILE_SIZE);
-
+            if (isMiniMapPressed) {
+                Map.drawMinimap();
+            }
 
             // if the screenState is equal to 2, show the leaderboard
         } else if (screenState == 2) {
@@ -277,13 +279,10 @@ public class BasicGame implements GameLoop {
                     AudioHelper.stop();
                 }
                 playerHealth.resetHealth();
-                miniMapActivate = false;
                 initializeGameState();
             }
 
 
-        } else if (screenState == 4) {
-            Map.drawMinimap();
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png",

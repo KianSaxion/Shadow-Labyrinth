@@ -16,23 +16,19 @@ public class KeyHandler {
 
         if (key == KeyEvent.VK_W) {
             upPressed = true;
-            NPC.activateDialogue = false;
-            Lighting.ENABLED = true;
+            updatePlayerMovement();
         }
         if (key == KeyEvent.VK_S) {
             downPressed = true;
-            NPC.activateDialogue = false;
-            Lighting.ENABLED = true;
+            updatePlayerMovement();
         }
         if (key == KeyEvent.VK_D) {
             rightPressed = true;
-            NPC.activateDialogue = false;
-            Lighting.ENABLED = true;
+            updatePlayerMovement();
         }
         if (key == KeyEvent.VK_A) {
             leftPressed = true;
-            NPC.activateDialogue = false;
-            Lighting.ENABLED = true;
+            updatePlayerMovement();
         }
 
         if (key == KeyEvent.VK_UP) {
@@ -96,6 +92,9 @@ public class KeyHandler {
             if (BasicGame.screenState == 2 || BasicGame.screenState == 6) {
                 BasicGame.screenState = 0;
             }
+            if(BasicGame.screenState == 1){
+                BasicGame.isMiniMapPressed = false;
+            }
         }
 
 
@@ -103,7 +102,7 @@ public class KeyHandler {
         if (key == KeyEvent.VK_M) {
             if (BasicGame.screenState == 1) {
                 // Set screen state based on the toggled value
-                BasicGame.screenState = 4; // Show the screen
+                BasicGame.isMiniMapPressed = true;
             }
         }
         if (key == KeyEvent.VK_SPACE) {
@@ -241,6 +240,11 @@ public class KeyHandler {
         } else {
             player.xSpeed = 0;
         }
+    }
+    public static void updatePlayerMovement() {
+        NPC.activateDialogue = false;
+        Lighting.ENABLED = true;
+        BasicGame.isMiniMapPressed = false;
     }
 
 }
