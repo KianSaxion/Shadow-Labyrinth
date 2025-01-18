@@ -63,7 +63,7 @@ public final class UserInterface {
     public static void drawLeaderboard() {
         // Arraylist with the top10 fastest times
         ArrayList<Double> top10Times = Leaderboard.getTop10Times();
-        SaxionApp.drawImage(LEADERBOARD_SCREEN,0,0,768,576);
+        SaxionApp.drawImage(LEADERBOARD_SCREEN, 0, 0, 768, 576);
 
         int textYCoordinate = 75;
         int countPosition = 0;
@@ -72,7 +72,7 @@ public final class UserInterface {
 
         // Show the 10 fastest times
         SaxionApp.drawText("Top 10 fastest times", 240, 25, 35);
-        SaxionApp.drawText("Press ESC to go back", 15,35,15);
+        SaxionApp.drawText("Press ESC to go back", 15, 35, 15);
 
         for (double time : top10Times) {
             countPosition++;
@@ -82,7 +82,7 @@ public final class UserInterface {
     }
 
     public static void drawKeyMap() {
-        SaxionApp.drawImage(KEYMAP_SCREEN, 0,0,768,576);
+        SaxionApp.drawImage(KEYMAP_SCREEN, 0, 0, 768, 576);
 
         SaxionApp.setBorderColor(Color.red);
         SaxionApp.setFill(Color.orange);
@@ -109,12 +109,6 @@ public final class UserInterface {
         };
     }
 
-    public static void changePlayerImage(Player player) {
-        if (player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack.png") || player.imageFile.equals(IMAGE_PATH + "player/" + "MCBack2.png")) {
-            player.imageFile = IMAGE_PATH + "player/MCback.png";
-        }
-    }
-
     public static void drawNPCDialogue() {
         int windowX = Variable.ORIGINAL_TILE_SIZE * 2;
         int windowY = Variable.ORIGINAL_TILE_SIZE / 2;
@@ -124,7 +118,7 @@ public final class UserInterface {
         drawDialogue(windowX, windowY, windowWidth, windowHeight);
         windowX += Variable.ORIGINAL_TILE_SIZE;
         windowY += Variable.ORIGINAL_TILE_SIZE;
-        for(String line : currentDialogue.split("\n")) {
+        for (String line : currentDialogue.split("\n")) {
             SaxionApp.drawText(line, windowX, windowY, 17);
             windowY += 22;
         }
@@ -140,6 +134,6 @@ public final class UserInterface {
         SaxionApp.drawRectangle(windowX, windowY, width, height);
         SaxionApp.setTextDrawingColor(Color.WHITE);
         SaxionApp.setBorderColor(Color.WHITE);
-        SaxionApp.drawRectangle(windowX+5, windowY+5, width-10, height-10);
+        SaxionApp.drawRectangle(windowX + 5, windowY + 5, width - 10, height - 10);
     }
 }

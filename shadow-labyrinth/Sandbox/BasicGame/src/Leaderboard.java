@@ -1,4 +1,5 @@
 import nl.saxion.app.CsvReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,9 +25,9 @@ public class Leaderboard {
         reader.setSeparator(',');
 
         // Read all the times in the csv file and add them to the arraylist
-        while (reader.loadRow()){
+        while (reader.loadRow()) {
             double time = reader.getDouble(0);
-                allTimes.add(time);
+            allTimes.add(time);
         }
 
         // Sort the times using the Collections method

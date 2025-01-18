@@ -65,7 +65,8 @@ public class Monster {
         int attackRange = Variable.ORIGINAL_TILE_SIZE;
 
         // Check if the player is close enough to the monster
-        boolean isInRange = Math.abs(playerX - monster.worldX) <= attackRange && Math.abs(playerY - monster.worldY) <= attackRange;
+        boolean isInRange = Math.abs(playerX - monster.worldX)
+                <= attackRange && Math.abs(playerY - monster.worldY) <= attackRange;
 
         if (isInRange && KeyHandler.isEPressed && monster.alive) { // Assuming "E" is the attack key
             monster.alive = false; // Kill the monster
@@ -75,12 +76,10 @@ public class Monster {
         playerX -= PLAYER_X_OFFSET;
         playerY -= PLAYER_Y_OFFSET;
 
-        boolean isColliding = playerX < monster.worldX &&
+        return playerX < monster.worldX &&
                 playerX + Variable.ORIGINAL_TILE_SIZE > monster.worldX &&
                 playerY < monster.worldY &&
                 playerY + Variable.ORIGINAL_TILE_SIZE > monster.worldY;
-
-        return isColliding;
     }
 
 
@@ -101,41 +100,7 @@ public class Monster {
             if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
                 // Update the monster's position
                 moveMonster(monster, futureX, futureY);
-//                resolvePlayerCollision(monster);
             }
-        }
-    }
-
-    private static void resolvePlayerCollision(Monster monster) {
-        if (playerIsColliding(BasicGame.player.worldX, BasicGame.player.worldY, monster)) {
-            int futureX = monster.worldX;
-            int futureY = monster.worldY;
-
-            // Knock the monster back slightly
-            int deltaX = BasicGame.player.worldX - monster.worldX;
-            int deltaY = BasicGame.player.worldY - monster.worldY;
-
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 0) {
-                    futureX -= monster.speed;
-                    if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
-                        monster.worldX -= monster.speed;
-                    } else {
-                        monster.worldX += monster.speed;
-                    }
-                }
-            } else {
-                if (deltaY > 0) {
-                    futureY -= monster.speed;
-                    if (Map.checkMonsterCollission(futureX, futureY, monsterSize, BasicGame.tileNumbers, BasicGame.tileTypes)) {
-                        monster.worldY -= monster.speed;
-                    } else {
-                        monster.worldY += monster.speed;
-                    }
-                }
-            }
-
-            setAction(monster);
         }
     }
 
@@ -167,7 +132,9 @@ public class Monster {
                         : "shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png";
                 monster.state = 1 - monster.state;
             }
-        } else {
+        }
+        // Duplicated code for better movement of the slime, otherwise it stays in a very small box.
+        else {
             if (monster.direction.equals("up")) {
                 monster.imagePath = monster.state == 0
                         ? "shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_2.png"

@@ -32,15 +32,12 @@ public class TrapManager {
     }
 
     // Check for trap activation separately (for animations)
-    public boolean checkTrapActivation(Player player) {
-        boolean activated = false;
+    public void checkTrapActivation(Player player) {
         for (Trap trap : traps) {
             if (trap.checkCollision(player.worldX, player.worldY)) {
                 trap.activateTrap();
-                activated = true;
             }
         }
-        return activated;
     }
 
     // Check only for health collision logic
