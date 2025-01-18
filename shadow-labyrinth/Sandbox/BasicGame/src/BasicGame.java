@@ -280,9 +280,8 @@ public class BasicGame implements GameLoop {
                 }
                 playerHealth.resetHealth();
                 initializeGameState();
+                Map.resetMinimapVisitedTiles();
             }
-
-
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png",
@@ -313,8 +312,8 @@ public class BasicGame implements GameLoop {
                 if (AudioHelper.isPlaying()) {
                     AudioHelper.stop();
                 }
+                Map.resetMinimapVisitedTiles();
                 initializeGameState();
-
             }
         } else if (screenState == 6) {
             SaxionApp.clear();
