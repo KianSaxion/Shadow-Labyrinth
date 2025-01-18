@@ -41,8 +41,6 @@ public class BasicGame implements GameLoop {
 
     public static boolean isAddedToCSV = false;
 
-    private static long lasTimeExecution = 0;
-
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -249,7 +247,7 @@ public class BasicGame implements GameLoop {
         } else if (screenState == 3) { // Game over screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/Traps/you_died_full.png", 0, 0, 768, 576);
-
+            KeyHandler.firsTime = true;
             if (!youDiedMusicPlayed) {
                 AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/darkSouls_youDied.wav", false);
                 youDiedMusicPlayed = true;
@@ -267,11 +265,7 @@ public class BasicGame implements GameLoop {
 
 
         } else if (screenState == 4) {
-            if(miniMapActivate){
                 Map.drawMinimap();
-            }
-
-
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();
             SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png", 0, 0, 768, 576);

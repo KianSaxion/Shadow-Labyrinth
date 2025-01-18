@@ -9,7 +9,7 @@ public class KeyHandler {
     public static boolean isSpacePressed = false;
     private boolean toggleFrame = false;
     private static int miniMapState = 0;
-
+    public static boolean firsTime = true;
     //    private static String playerPath = "shadow-labyrinth/Sandbox/resources/images/player/";
     private static String playerWithSwordPath = "shadow-labyrinth/Sandbox/resources/images/playerSwordAnimation/";
 
@@ -66,14 +66,21 @@ public class KeyHandler {
                 BasicGame.screenState = 1;
 
                 isEnterPressed = true;
-                // Start the timer once the game has started
-                BasicGame.startTime = System.currentTimeMillis();
-                BasicGame.timerStarted = true;
+
+                if (firsTime) {
+                    // Start the timer once the game has started
+                    BasicGame.startTime = System.currentTimeMillis();
+                    BasicGame.timerStarted = true;
+
+                    firsTime = false;
+                }
+
 
                 for (Monster monster : Monster.Monsters) {
                     monster.alive = true;
                 }
             }
+
 
             if (UserInterface.commandNumber == 1) {
                 BasicGame.screenState = 2;
