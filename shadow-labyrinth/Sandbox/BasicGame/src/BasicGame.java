@@ -16,7 +16,7 @@ public class BasicGame implements GameLoop {
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
     public static Map[] tileTypes = new Map[3];
-    public static boolean miniMapActivate = false;
+    public static boolean miniMapActivate = true;
 
     // Game Entities
     public static Player player = new Player();
@@ -207,19 +207,19 @@ public class BasicGame implements GameLoop {
             drawHealthBar();
 
             // Calculate the elapsed time
-            long elapsedTime = System.currentTimeMillis() - startTime;
+//            long elapsedTime = System.currentTimeMillis() - startTime;
 
             // Format the elapsed time into HH:mm:ss
-            int milliseconds = (int) (elapsedTime % 1000);
-            int seconds = (int) (elapsedTime / 1000) % 60;
-            int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
+//            int milliseconds = (int) (elapsedTime % 1000);
+//            int seconds = (int) (elapsedTime / 1000) % 60;
+//            int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
 
             // Update the current time string
-            String elapsedTime1 = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds);
+//            String elapsedTime1 = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds);
 
             // Display the timer on the screen
-            SaxionApp.setTextDrawingColor(Color.WHITE);
-            SaxionApp.drawText("Time: " + elapsedTime1, 540, 40, 20);
+//            SaxionApp.setTextDrawingColor(Color.WHITE);
+//            SaxionApp.drawText("Time: " + elapsedTime1, 540, 40, 20);
 
 
             // Draw and check collisions with all NPCs
