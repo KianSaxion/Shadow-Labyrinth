@@ -127,7 +127,7 @@ public class Map {
     public static void drawMinimap() {
         SaxionApp.setBackgroundColor(Color.black);
         SaxionApp.setTextDrawingColor(Color.white);
-        SaxionApp.drawText("To exit the map, press Enter.", 300, 70, 30);
+        SaxionApp.drawText("To exit the map, press ESC.", 300, 70, 30);
 
         SaxionApp.setFill(Color.darkGray);
         SaxionApp.setBorderColor(Color.darkGray);
