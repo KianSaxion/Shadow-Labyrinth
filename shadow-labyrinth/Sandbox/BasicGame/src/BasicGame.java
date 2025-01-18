@@ -5,13 +5,9 @@ import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BasicGame implements GameLoop {
-    // Camera properties
-    private int cameraX;
-    private int cameraY;
+
     // The constant responsible for which screen to display
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
@@ -41,8 +37,6 @@ public class BasicGame implements GameLoop {
 
     public static boolean isAddedToCSV = false;
 
-    private static long lasTimeExecution = 0;
-
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), 768, 576, 20);
     }
@@ -60,22 +54,38 @@ public class BasicGame implements GameLoop {
         Lighting.initializeFilters();
 
         // Initialize NPCs
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png",
+                Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png",
+                Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43, 1);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png",
+                Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png",
+                Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
+        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png",
+                Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
 
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Yellow_Right.png", Variable.ORIGINAL_TILE_SIZE * 10, Variable.ORIGINAL_TILE_SIZE * 49, 0);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Green_Right.png", Variable.ORIGINAL_TILE_SIZE * 61, Variable.ORIGINAL_TILE_SIZE * 43, 1);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
-        new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
-        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
+        // Adding monsters
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 83, Variable.ORIGINAL_TILE_SIZE * 26);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 41);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 52);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 45);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 98, Variable.ORIGINAL_TILE_SIZE * 18);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 100, Variable.ORIGINAL_TILE_SIZE * 17);
+        new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png",
+                Variable.ORIGINAL_TILE_SIZE * 101, Variable.ORIGINAL_TILE_SIZE * 19);
 
         initializeGameState();
     }
@@ -87,7 +97,8 @@ public class BasicGame implements GameLoop {
             UserInterface.drawStartScreen();
 
             if (!AudioHelper3.isPlaying()) {
-                AudioHelper3.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_HollowKnightCut.wav", true);
+                AudioHelper3.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_HollowKnightCut.wav",
+                        true);
             }
 
             if (!KeyHandler.isUpArrowPressed && !KeyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
@@ -99,18 +110,19 @@ public class BasicGame implements GameLoop {
             keyHandler.update(player);
             long currentTime = System.currentTimeMillis();
 
-
             if (AudioHelper3.isPlaying()) {
                 AudioHelper3.stop();
             }
 
             if (!AudioHelper.isPlaying()) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav",
+                        true);
             }
 
             // Update the camera position based on the player
-            cameraX = player.worldX - player.screenX;
-            cameraY = player.worldY - player.screenY;
+            // Camera properties
+            int cameraX = player.worldX - player.screenX;
+            int cameraY = player.worldY - player.screenY;
 
             // Draw map and NPCs based on the camera
             currentMap.drawMap(player, tileNumbers, tileTypes);
@@ -137,7 +149,7 @@ public class BasicGame implements GameLoop {
 
             // Handles health reduction separately from traps with timing
             if (TrapManager.checkHealthCollision(player) && currentTime - lastHealthReductionTime >= HEALTH_COOLDOWN_MS) {
-                if (playerHealth.reduceHealth()) {
+                if (Health.reduceHealth()) {
                     lastHealthReductionTime = currentTime;
                 }
             }
@@ -176,7 +188,8 @@ public class BasicGame implements GameLoop {
                 for (Monster monster : Monster.Monsters) {
                     if (Monster.isMonsterInVisivbleArea(cameraX, cameraY, monster) && monster.alive) {
                         Monster.update(monster);
-                        AudioHelper3.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav", false);
+                        AudioHelper3.play("shadow-labyrinth/Sandbox/resources/sounds/goopy-slime-4-219777.wav",
+                                false);
                     }
                 }
                 lastExecutionTime = currentTime;
@@ -238,7 +251,8 @@ public class BasicGame implements GameLoop {
 
             // Draw player and other entities
             SaxionApp.drawImage(player.imageFile, (player.screenX - (Variable.ORIGINAL_TILE_SIZE / 2)),
-                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE, Variable.ORIGINAL_TILE_SIZE);
+                    (player.screenY - (Variable.ORIGINAL_TILE_SIZE / 2)), Variable.ORIGINAL_TILE_SIZE,
+                    Variable.ORIGINAL_TILE_SIZE);
 
 
             // if the screenState is equal to 2, show the leaderboard
@@ -248,10 +262,12 @@ public class BasicGame implements GameLoop {
 
         } else if (screenState == 3) { // Game over screen
             SaxionApp.clear();
-            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/Traps/you_died_full.png", 0, 0, 768, 576);
-
+            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/Traps/you_died_full.png",
+                    0, 0, 768, 576);
+            KeyHandler.firsTime = true;
             if (!youDiedMusicPlayed) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/darkSouls_youDied.wav", false);
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/darkSouls_youDied.wav",
+                        false);
                 youDiedMusicPlayed = true;
             }
 
@@ -267,18 +283,16 @@ public class BasicGame implements GameLoop {
 
 
         } else if (screenState == 4) {
-            if(miniMapActivate){
-                Map.drawMinimap();
-            }
-
-
+            Map.drawMinimap();
         } else if (screenState == 5) { // End screen
             SaxionApp.clear();
-            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png", 0, 0, 768, 576);
+            SaxionApp.drawImage("shadow-labyrinth/Sandbox/resources/images/screen/end_screen.png",
+                    0, 0, 768, 576);
             SaxionApp.setTextDrawingColor(Color.WHITE);
 
             if (!endMusicPlayed) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_EnterHallownestCut.wav", false);
+                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_EnterHallownestCut.wav",
+                        false);
                 endMusicPlayed = true;
             }
 
@@ -292,14 +306,16 @@ public class BasicGame implements GameLoop {
                 Leaderboard.saveTime(totalTime);
             }
             isAddedToCSV = true;
+            KeyHandler.firsTime = true;
 
-            if (screenState == 5 && KeyHandler.isEnterPressed) {
+            if (KeyHandler.isEnterPressed) {
                 endMusicPlayed = false;
                 KeyHandler.isEnterPressed = false;
                 if (AudioHelper.isPlaying()) {
                     AudioHelper.stop();
                 }
                 initializeGameState();
+
             }
         } else if (screenState == 6) {
             SaxionApp.clear();

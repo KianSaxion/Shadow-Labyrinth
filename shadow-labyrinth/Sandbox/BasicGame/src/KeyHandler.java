@@ -1,4 +1,3 @@
-import nl.saxion.app.SaxionApp;
 import nl.saxion.app.interaction.KeyboardEvent;
 
 import java.awt.event.KeyEvent;
@@ -6,12 +5,11 @@ import java.awt.event.KeyEvent;
 public class KeyHandler {
     public static boolean upPressed, downPressed, leftPressed, rightPressed, isUpArrowPressed, isDownArrowPressed, isEnterPressed, isEscapePressed, isMiniMapPressed, isEPressed;
     public static int speed = 10; // Fixed SPEED
-    public static boolean isSpacePressed = false;
     private boolean toggleFrame = false;
     private static int miniMapState = 0;
-
+    public static boolean firsTime = true;
     //    private static String playerPath = "shadow-labyrinth/Sandbox/resources/images/player/";
-    private static String playerWithSwordPath = "shadow-labyrinth/Sandbox/resources/images/playerSwordAnimation/";
+    private final static String playerWithSwordPath = "shadow-labyrinth/Sandbox/resources/images/playerSwordAnimation/";
 
     public static void keyPressed(KeyboardEvent e) {
         int key = e.getKeyCode();
@@ -66,14 +64,20 @@ public class KeyHandler {
                 BasicGame.screenState = 1;
 
                 isEnterPressed = true;
-                // Start the timer once the game has started
-                BasicGame.startTime = System.currentTimeMillis();
-                BasicGame.timerStarted = true;
+
+                if (firsTime) {
+                    BasicGame.startTime = System.currentTimeMillis();
+                    BasicGame.timerStarted = true;
+
+                    firsTime = false;
+                }
+
 
                 for (Monster monster : Monster.Monsters) {
                     monster.alive = true;
                 }
             }
+
 
             if (UserInterface.commandNumber == 1) {
                 BasicGame.screenState = 2;
@@ -103,11 +107,7 @@ public class KeyHandler {
             }
         }
         if (key == KeyEvent.VK_SPACE) {
-            if (NPC.activateDialogue) {
-                NPC.activateDialogue = false; // Close the dialogue when space is pressed
-                UserInterface.dialogueOpen = true; // Ensure dialogueOpen is set to true
-                Lighting.ENABLED = true;
-            }
+            hide();
         }
 
         if (key == KeyEvent.VK_E) {
@@ -123,6 +123,7 @@ public class KeyHandler {
             Lighting.ENABLED = true;
         }
     }
+
     public static void keyReleased(KeyboardEvent e) {
         int key = e.getKeyCode();
 

@@ -3,8 +3,9 @@ import nl.saxion.app.SaxionApp;
 import java.util.List;
 
 public class Trap {
-    private int x, y;
-    private String[] trapImages = {
+    private final int x;
+    private final int y;
+    private final String[] trapImages = {
             "shadow-labyrinth/Sandbox/resources/images/traps/spike_1.png",
             "shadow-labyrinth/Sandbox/resources/images/traps/spike_2.png",
             "shadow-labyrinth/Sandbox/resources/images/traps/spike_3.png",

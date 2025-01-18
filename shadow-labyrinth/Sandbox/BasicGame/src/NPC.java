@@ -1,14 +1,12 @@
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 import nl.saxion.app.SaxionApp;
 
 public class NPC {
     public static ArrayList<NPC> NPCs = new ArrayList<>(); // Store all NPC instances
-    private String imagePath; // Path to the NPC's image
-    private int worldX; // NPC's world X position
-    private int worldY; // NPC's world Y position
-    private int number; // Make number an instance variable
+    private final String imagePath; // Path to the NPC's image
+    private final int worldX; // NPC's world X position
+    private final int worldY; // NPC's world Y position
     public String loadDialogue; // Make loadDialogue an instance variable
     public static boolean activateDialogue = false;
     public boolean isDrawn = false;
@@ -18,17 +16,13 @@ public class NPC {
         this.imagePath = imagePath;
         this.worldX = worldX;
         this.worldY = worldY;
-        this.number = number; // Assign the unique number
+        // Make number an instance variable
         if (number >= 0 && number < dialogues.length) {
             this.loadDialogue = dialogues[number]; // Assign dialogue specific to this NPC
         } else {
             this.loadDialogue = "No dialogue available."; // Fallback for invalid numbers
         }
         NPCs.add(this); // Add this NPC to the global list
-    }
-
-    public int getNumber() {
-        return number;
     }
 
     public void draw(int cameraX, int cameraY) {

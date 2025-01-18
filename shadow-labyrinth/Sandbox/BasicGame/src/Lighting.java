@@ -7,7 +7,6 @@ import java.io.IOException;
 import nl.saxion.app.SaxionApp;
 
 public class Lighting {
-
     private static final int screenWidth = Variable.SCREEN_WIDTH;
     private static final int screenHeight = Variable.SCREEN_HEIGHT;
     private static int circleSize = 400; // Default light radius

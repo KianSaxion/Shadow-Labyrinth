@@ -19,7 +19,6 @@ public class Map {
 
     public boolean isTrapZone; // not needed, just here for testing purposes
     public boolean resetsHealth;
-    public static boolean miniMapActivate = false;
 
     // Variable for the size of minimap
     private static final int TILE_SIZE_MINIMAP = 5;
@@ -215,14 +214,12 @@ public class Map {
     }
 
     public static boolean checkMonsterCollission(int playerX, int playerY, int size, int[][] tileNumbers, Map[] tileTypes) {
-        int left = playerX;
-        int top = playerY;
         int right = playerX + size - 1; // Account for width
         int bottom = playerY + size - 1; // Account for height
 
-        int leftCol = left / Variable.ORIGINAL_TILE_SIZE;
+        int leftCol = playerX / Variable.ORIGINAL_TILE_SIZE;
         int rightCol = right / Variable.ORIGINAL_TILE_SIZE;
-        int topRow = top / Variable.ORIGINAL_TILE_SIZE;
+        int topRow = playerY / Variable.ORIGINAL_TILE_SIZE;
         int bottomRow = bottom / Variable.ORIGINAL_TILE_SIZE;
 
         // Check all corners of the bounding box
@@ -269,7 +266,6 @@ public class Map {
                     Health.reduceHealth();
                     lastExecutionTime = currentTime;
                 }
-//                System.out.println("collision");
 
                 if (KeyHandler.isEPressed && monster.alive) {
                     AudioHelper2.play("shadow-labyrinth/Sandbox/resources/sounds/deadSlime.wav", false);
