@@ -26,7 +26,7 @@ public class Leaderboard {
         // Read all the times in the csv file and add them to the arraylist
         while (reader.loadRow()){
             double time = reader.getDouble(0);
-            allTimes.add(time);
+                allTimes.add(time);
         }
 
         // Sort the times using the Collections method

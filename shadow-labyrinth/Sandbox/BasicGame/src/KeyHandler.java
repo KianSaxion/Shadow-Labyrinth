@@ -110,11 +110,7 @@ public class KeyHandler {
             }
         }
         if (key == KeyEvent.VK_SPACE) {
-            if (NPC.activateDialogue) {
-                NPC.activateDialogue = false; // Close the dialogue when space is pressed
-                UserInterface.dialogueOpen = true; // Ensure dialogueOpen is set to true
-                Lighting.ENABLED = true;
-            }
+            hide();
         }
 
         if (key == KeyEvent.VK_E) {

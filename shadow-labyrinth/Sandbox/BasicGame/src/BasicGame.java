@@ -5,13 +5,12 @@ import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BasicGame implements GameLoop {
     // Camera properties
     private int cameraX;
     private int cameraY;
+
     // The constant responsible for which screen to display
     public static int screenState = 0;
     public static int[][] tileNumbers = new int[Variable.MAX_MAP_ROW][Variable.MAX_MAP_COLUMN];
@@ -64,6 +63,8 @@ public class BasicGame implements GameLoop {
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Orange_Left.png", Variable.ORIGINAL_TILE_SIZE * 45, Variable.ORIGINAL_TILE_SIZE * 8, 2);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Blue_Left.png", Variable.ORIGINAL_TILE_SIZE * 115, Variable.ORIGINAL_TILE_SIZE * 53, 3);
         new NPC("shadow-labyrinth/Sandbox/resources/images/NPC/NPC_Red_Right.png", Variable.ORIGINAL_TILE_SIZE * 64, Variable.ORIGINAL_TILE_SIZE * 10, 4);
+
+        // Adding monsters
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 50, Variable.ORIGINAL_TILE_SIZE * 40);
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/redslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 32, Variable.ORIGINAL_TILE_SIZE * 18);
         new Monster("shadow-labyrinth/Sandbox/resources/images/monsters/blueslime_down_1.png", Variable.ORIGINAL_TILE_SIZE * 53, Variable.ORIGINAL_TILE_SIZE * 24);
@@ -77,7 +78,6 @@ public class BasicGame implements GameLoop {
 
         initializeGameState();
     }
-
     @Override
     public void loop() {
         if (screenState == 0) {
@@ -85,7 +85,7 @@ public class BasicGame implements GameLoop {
             UserInterface.drawStartScreen();
 
             if (!AudioHelper3.isPlaying()) {
-                AudioHelper3.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_HollowKnightCut.wav", true);
+//                AudioHelper3.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_HollowKnightCut.wav", true);
             }
 
             if (!KeyHandler.isUpArrowPressed && !KeyHandler.isDownArrowPressed && AudioHelper.isPlaying()) {
@@ -97,13 +97,12 @@ public class BasicGame implements GameLoop {
             keyHandler.update(player);
             long currentTime = System.currentTimeMillis();
 
-
             if (AudioHelper3.isPlaying()) {
                 AudioHelper3.stop();
             }
 
             if (!AudioHelper.isPlaying()) {
-                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
+//                AudioHelper.newSong("shadow-labyrinth/Sandbox/resources/sounds/HollowKnight_Dirtmouth.wav", true);
             }
 
             // Update the camera position based on the player
